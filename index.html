@@ -1,578 +1,505 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>簡易見積書</title>
-  <style>
-    :root{
-      --bg:#f4f6f8;
-      --card:#fff;
-      --main:#1f2937;
-      --sub:#6b7280;
-      --line:#d8dee8;
-      --accent:#2563eb;
-      --dark:#111827;
-      --danger:#dc2626;
-      --ok:#16a34a;
-      --navy:#1e293b;
-      --navy2:#334155;
-    }
-
-    *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--main);
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      line-height:1.6;
-    }
-
-    .app{
-      max-width:760px;
-      margin:0 auto;
-      padding:14px 14px 130px;
-    }
-
-    header{padding:10px 2px 16px}
-
-    h1{
-      margin:0;
-      font-size:24px;
-      letter-spacing:.04em;
-    }
-
-    .lead{
-      margin:4px 0 0;
-      color:var(--sub);
-      font-size:13px;
-    }
-
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:14px;
-      box-shadow:0 8px 22px rgba(15,23,42,.06);
-      margin-bottom:14px;
-    }
-
-    label{
-      display:block;
-      font-weight:800;
-      font-size:13px;
-      margin:12px 0 6px;
-    }
-
-    input,textarea,select{
-      width:100%;
-      border:1px solid #cfd6df;
-      border-radius:12px;
-      padding:12px;
-      font-size:16px;
-      background:#fff;
-      color:var(--main);
-      outline:none;
-    }
-
-    textarea{
-      min-height:78px;
-      resize:vertical;
-    }
-
-    input:focus,textarea:focus,select:focus{
-      border-color:var(--accent);
-      box-shadow:0 0 0 3px rgba(37,99,235,.12);
-    }
-
-    .row{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-
-    .row3{
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:8px;
-    }
-
-    .item{
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      margin-top:10px;
-      background:#fafafa;
-    }
-
-    .item-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-bottom:4px;
-    }
-
-    .item-title{
-      font-weight:900;
-      font-size:13px;
-      color:var(--sub);
-    }
-
-    button{
-      border:0;
-      border-radius:999px;
-      padding:12px 14px;
-      font-weight:900;
-      font-size:14px;
-      cursor:pointer;
-      color:#fff;
-      background:var(--accent);
-      touch-action:manipulation;
-    }
-
-    button:active{transform:translateY(1px)}
-
-    .btn-sub{background:#4b5563}
-    .btn-danger{background:var(--danger);padding:8px 10px;font-size:12px}
-    .btn-ok{background:var(--ok)}
-    .btn-light{background:#e5e7eb;color:var(--main)}
-
-    .mini-actions{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:8px;
-      margin-top:12px;
-    }
-
-    .actions{
-      position:fixed;
-      left:0;
-      right:0;
-      bottom:0;
-      background:rgba(255,255,255,.96);
-      backdrop-filter:blur(12px);
-      border-top:1px solid var(--line);
-      padding:10px 12px max(10px,env(safe-area-inset-bottom));
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      gap:8px;
-      max-width:760px;
-      margin:0 auto;
-      z-index:20;
-    }
-
-    .total-box{
-      background:var(--dark);
-      color:#fff;
-      border-radius:18px;
-      padding:14px;
-      margin-top:12px;
-    }
-
-    .total-line{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      font-size:14px;
-    }
-
-    .total-line.big{
-      font-size:22px;
-      font-weight:950;
-      border-top:1px solid rgba(255,255,255,.25);
-      margin-top:8px;
-      padding-top:8px;
-    }
-
-    .preview-label{
-      font-weight:950;
-      margin-bottom:8px;
-    }
-
-    .estimate-sheet{
-      background:#fff;
-      color:#1f2937;
-      border:0;
-      border-radius:0;
-      overflow:hidden;
-      font-family:"Yu Gothic","Meiryo","MS PGothic",sans-serif;
-      padding:28px 24px 22px;
-      box-shadow:none;
-      max-width:794px;
-      margin:0 auto;
-    }
-
-    .sheet-top{
-      background:#1e293b!important;
-      color:#fff;
-      padding:18px 24px;
-      margin:-28px -24px 20px;
-    }
-
-    .sheet-title{
-      text-align:center;
-      font-size:32px;
-      font-weight:800;
-      letter-spacing:.42em;
-      color:#fff;
-      border:none;
-      width:100%;
-      margin:0;
-    }
-
-    .sheet-body{
-      padding:0;
-    }
-
-    .top-grid{
-      display:grid;
-      grid-template-columns:1fr 245px;
-      gap:20px;
-      align-items:start;
-      margin-bottom:14px;
-    }
-
-    .customer-name{
-      font-size:20px;
-      font-weight:800;
-      border-bottom:2px solid #334155;
-      padding-bottom:10px;
-      margin-bottom:12px;
-      color:#0f172a;
-    }
-
-    .message{
-      font-size:12px;
-      color:#475569;
-    }
-
-    .box{
-      border:1px solid #cbd5e1;
-      border-radius:0;
-      padding:8px 10px;
-      font-size:12px;
-      background:#fff;
-      margin-bottom:8px;
-    }
-
-    .label-small{
-      display:block;
-      color:#475569;
-      font-size:11px;
-      font-weight:900;
-      margin-bottom:3px;
-    }
-
-    .company-box{
-      text-align:right;
-      border:0;
-      padding:2px 0 0;
-      color:#334155;
-      line-height:1.8;
-      font-size:11px;
-      white-space:pre-wrap;
-    }
-
-    .grand-total{
-      border:3px solid #0f172a;
-      padding:14px;
-      margin:18px 0 18px;
-      background:#f8fafc;
-      display:grid;
-      grid-template-columns:160px 1fr;
-      align-items:center;
-    }
-
-    .grand-total .cap{
-      font-size:15px;
-      font-weight:800;
-      color:#334155;
-      letter-spacing:.08em;
-    }
-
-    .grand-total .amount{
-      text-align:right;
-      font-size:36px;
-      font-weight:950;
-      line-height:1.2;
-      color:#111827;
-      letter-spacing:.03em;
-    }
-
-    .table-wrap{
-      width:100%;
-      overflow-x:auto;
-      border:2px solid #334155;
-      border-radius:0;
-    }
-
-    .estimate-table{
-      width:100%;
-      min-width:720px;
-      border-collapse:collapse;
-      font-size:11px;
-    }
-
-    .estimate-table th{
-      background:#334155;
-      color:#fff;
-      border:1px solid #475569;
-      padding:9px 5px;
-      text-align:center;
-      font-size:11px;
-      white-space:nowrap;
-      font-weight:800;
-    }
-
-    .estimate-table td{
-      border:1px solid #94a3b8;
-      padding:8px 5px;
-      vertical-align:top;
-      background:#fff;
-      height:30px;
-    }
-
-    .no{width:36px;text-align:center}
-    .content{min-width:150px}
-    .detail{min-width:220px;color:#374151;white-space:pre-wrap}
-    .qty{width:62px;text-align:right;white-space:nowrap}
-    .unit{width:50px;text-align:center;white-space:nowrap}
-    .price{width:92px;text-align:right;white-space:nowrap;font-weight:800}
-
-    .summary-table{
-      width:330px;
-      margin-left:auto;
-      border-collapse:collapse;
-      margin-top:18px;
-      font-size:12px;
-      border:2px solid #334155;
-    }
-
-    .summary-table td{
-      padding:9px 10px;
-      border-bottom:1px solid #cbd5e1;
-    }
-
-    .summary-table td:last-child{
-      text-align:right;
-      font-weight:800;
-    }
-
-    .summary-table tr:last-child td{
-      background:#334155;
-      color:#fff;
-      font-size:15px;
-      font-weight:900;
-      border-bottom:0;
-    }
-
-    .note-box{
-      margin-top:18px;
-      border:2px solid #cbd5e1;
-      border-radius:0;
-      padding:12px;
-      font-size:11px;
-      white-space:pre-wrap;
-      min-height:80px;
-      background:#fff;
-    }
-
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom:92px;
-      transform:translateX(-50%);
-      background:#111827;
-      color:#fff;
-      padding:10px 14px;
-      border-radius:999px;
-      font-size:13px;
-      opacity:0;
-      pointer-events:none;
-      transition:.2s;
-      z-index:30;
-    }
-
-    .toast.show{
-      opacity:1;
-      bottom:106px;
-    }
-
-    .copy-text{
-      position:absolute;
-      left:-9999px;
-      top:-9999px;
-      white-space:pre-wrap;
-    }
-
-    .hide-print{display:block}
-
-    @media print{
-      @page{margin:10mm}
-
-      body{
-        background:#fff;
-      }
-
-      header,
-      .input-area,
-      .actions,
-      .mini-actions,
-      .hide-print,
-      .toast{
-        display:none!important;
-      }
-
-      .app{
-        max-width:none;
-        padding:0;
-      }
-
-      .card{
-        border:0;
-        box-shadow:none;
-        padding:0;
-        margin:0;
-      }
-
-      .estimate-sheet{
-        border-radius:0;
-        border:0;
-        padding:18mm 12mm 10mm;
-        max-width:none;
-      }
-
-      .sheet-top{
-        background:#1e293b!important;
-        color:#fff!important;
-        print-color-adjust:exact;
-        -webkit-print-color-adjust:exact;
-        margin:-18mm -12mm 12mm;
-      }
-
-      .sheet-title{
-        color:#fff!important;
-      }
-
-      .grand-total{
-        print-color-adjust:exact;
-        -webkit-print-color-adjust:exact;
-      }
-
-      .estimate-table th,
-      .summary-table tr:last-child td{
-        background:#334155!important;
-        color:#fff!important;
-        print-color-adjust:exact;
-        -webkit-print-color-adjust:exact;
-      }
-
-      .table-wrap{
-        overflow:visible;
-      }
-
-      .estimate-table{
-        min-width:0;
-        font-size:10.2px;
-      }
-
-      .estimate-table td{
-        height:25px;
-        padding:5px;
-      }
-
-      .summary-table{
-        font-size:10.8px;
-      }
-
-      .note-box{
-        min-height:55px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>簡易見積書</title>
+<style>
+:root{
+  --bg:#f4f6f8;
+  --card:#fff;
+  --main:#1f2937;
+  --sub:#6b7280;
+  --line:#d8dee8;
+  --accent:#2563eb;
+  --dark:#111827;
+  --danger:#dc2626;
+  --ok:#16a34a;
+  --blue:#dce8f6;
+  --blue2:#7f9dbd;
+  --ink:#334155;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--main);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.6;
+}
+.app{
+  max-width:760px;
+  margin:0 auto;
+  padding:14px 14px 130px;
+}
+header{padding:10px 2px 16px}
+h1{margin:0;font-size:24px;letter-spacing:.04em}
+.lead{margin:4px 0 0;color:var(--sub);font-size:13px}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px;
+  box-shadow:0 8px 22px rgba(15,23,42,.06);
+  margin-bottom:14px;
+}
+label{
+  display:block;
+  font-weight:800;
+  font-size:13px;
+  margin:12px 0 6px;
+}
+input,textarea,select{
+  width:100%;
+  border:1px solid #cfd6df;
+  border-radius:12px;
+  padding:12px;
+  font-size:16px;
+  background:#fff;
+  color:var(--main);
+  outline:none;
+}
+textarea{min-height:78px;resize:vertical}
+input:focus,textarea:focus,select:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(37,99,235,.12);
+}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.item{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+  margin-top:10px;
+  background:#fafafa;
+}
+.item-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:4px;
+}
+.item-title{font-weight:900;font-size:13px;color:var(--sub)}
+button{
+  border:0;
+  border-radius:999px;
+  padding:12px 14px;
+  font-weight:900;
+  font-size:14px;
+  cursor:pointer;
+  color:#fff;
+  background:var(--accent);
+  touch-action:manipulation;
+}
+button:active{transform:translateY(1px)}
+.btn-sub{background:#4b5563}
+.btn-danger{background:var(--danger);padding:8px 10px;font-size:12px}
+.btn-ok{background:var(--ok)}
+.btn-light{background:#e5e7eb;color:var(--main)}
+.mini-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:12px;
+}
+.actions{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);
+  padding:10px 12px max(10px,env(safe-area-inset-bottom));
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:8px;
+  max-width:760px;
+  margin:0 auto;
+  z-index:20;
+}
+.total-box{
+  background:var(--dark);
+  color:#fff;
+  border-radius:18px;
+  padding:14px;
+  margin-top:12px;
+}
+.total-line{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  font-size:14px;
+}
+.total-line.big{
+  font-size:22px;
+  font-weight:950;
+  border-top:1px solid rgba(255,255,255,.25);
+  margin-top:8px;
+  padding-top:8px;
+}
+.preview-label{font-weight:950;margin-bottom:8px}
+
+/* 見積書本体 */
+.estimate-sheet{
+  background:#fff;
+  color:#334155;
+  border:0;
+  border-radius:0;
+  overflow:hidden;
+  font-family:"Yu Gothic","Meiryo","MS PGothic",sans-serif;
+  padding:24px 26px 20px;
+  box-shadow:none;
+  max-width:794px;
+  margin:0 auto;
+}
+.sheet-title{
+  text-align:center;
+  font-size:28px;
+  font-weight:700;
+  letter-spacing:.45em;
+  color:#334155;
+  border-bottom:3px double #7f9dbd;
+  padding:4px 0 10px;
+  width:60%;
+  margin:0 auto 18px;
+}
+.sheet-body{padding:0}
+.top-grid{
+  display:grid;
+  grid-template-columns:1fr 230px;
+  gap:18px;
+  align-items:start;
+  margin-bottom:12px;
+}
+.customer-name{
+  font-size:18px;
+  font-weight:700;
+  border-bottom:2px solid #7f9dbd;
+  padding-bottom:8px;
+  margin-bottom:10px;
+  color:#1e293b;
+}
+.message{
+  font-size:12px;
+  color:#64748b;
+}
+.box{
+  border:1px solid #cbd5e1;
+  border-radius:0;
+  padding:7px 9px;
+  font-size:12px;
+  background:#fff;
+  margin-bottom:8px;
+}
+.label-small{
+  display:block;
+  color:#64748b;
+  font-size:10px;
+  font-weight:900;
+  margin-bottom:2px;
+}
+.company-box{
+  text-align:right;
+  border:0;
+  padding:2px 0 0;
+  color:#475569;
+  line-height:1.65;
+  font-size:10.5px;
+  white-space:pre-wrap;
+}
+.grand-total{
+  border:2px solid #7f9dbd;
+  border-left:8px solid #7f9dbd;
+  padding:10px 12px;
+  margin:14px 0;
+  background:#f8fbff;
+  display:grid;
+  grid-template-columns:140px 1fr;
+  align-items:center;
+}
+.grand-total .cap{
+  font-size:13px;
+  font-weight:800;
+  color:#475569;
+}
+.grand-total .amount{
+  text-align:right;
+  font-size:32px;
+  font-weight:900;
+  line-height:1.2;
+  color:#0f172a;
+}
+.table-wrap{
+  width:100%;
+  overflow-x:auto;
+  border:1.5px solid #7f9dbd;
+  border-radius:0;
+}
+.estimate-table{
+  width:100%;
+  min-width:690px;
+  border-collapse:collapse;
+  font-size:10.5px;
+}
+.estimate-table th{
+  background:#dce8f6;
+  color:#334155;
+  border:1px solid #7f9dbd;
+  padding:6px 4px;
+  text-align:center;
+  font-size:10px;
+  white-space:nowrap;
+  font-weight:800;
+}
+.estimate-table td{
+  border:1px solid #a9bad0;
+  padding:5px 4px;
+  vertical-align:top;
+  background:#fff;
+  height:24px;
+}
+.no{width:34px;text-align:center}
+.content{min-width:145px}
+.detail{min-width:215px;color:#374151;white-space:pre-wrap}
+.qty{width:58px;text-align:right;white-space:nowrap}
+.unit{width:46px;text-align:center;white-space:nowrap}
+.price{width:88px;text-align:right;white-space:nowrap;font-weight:800}
+.summary-table{
+  width:310px;
+  margin-left:auto;
+  border-collapse:collapse;
+  margin-top:12px;
+  font-size:11px;
+  border:1.5px solid #7f9dbd;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+.summary-table td{
+  padding:7px 9px;
+  border-bottom:1px solid #cbd5e1;
+}
+.summary-table td:last-child{
+  text-align:right;
+  font-weight:800;
+}
+.summary-table tr:last-child td{
+  background:#dce8f6;
+  color:#1e293b;
+  font-size:14px;
+  font-weight:900;
+  border-bottom:0;
+}
+.note-box{
+  margin-top:12px;
+  border:1.5px solid #cbd5e1;
+  border-radius:0;
+  padding:10px;
+  font-size:10.5px;
+  white-space:pre-wrap;
+  min-height:58px;
+  background:#fff;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:92px;
+  transform:translateX(-50%);
+  background:#111827;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:999px;
+  font-size:13px;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
+  z-index:30;
+}
+.toast.show{opacity:1;bottom:106px}
+.copy-text{
+  position:absolute;
+  left:-9999px;
+  top:-9999px;
+  white-space:pre-wrap;
+}
+.hide-print{display:block}
+
+@media print{
+  @page{
+    size:A4 portrait;
+    margin:8mm;
+  }
+  body{background:#fff}
+  header,.input-area,.actions,.mini-actions,.hide-print,.toast{
+    display:none!important;
+  }
+  .app{
+    max-width:none;
+    padding:0;
+  }
+  .card{
+    border:0;
+    box-shadow:none;
+    padding:0;
+    margin:0;
+  }
+  .estimate-sheet{
+    padding:8mm 8mm 6mm;
+    max-width:none;
+  }
+  .sheet-title{
+    font-size:24px;
+    margin-bottom:10px;
+    padding-bottom:7px;
+  }
+  .top-grid{
+    grid-template-columns:1fr 210px;
+    gap:14px;
+    margin-bottom:8px;
+  }
+  .customer-name{
+    font-size:16px;
+    padding-bottom:6px;
+    margin-bottom:6px;
+  }
+  .message{font-size:10.5px}
+  .box{
+    padding:5px 7px;
+    font-size:10.5px;
+    margin-bottom:6px;
+  }
+  .company-box{
+    font-size:9.3px;
+    line-height:1.45;
+  }
+  .grand-total{
+    margin:9px 0;
+    padding:8px 10px;
+    grid-template-columns:120px 1fr;
+  }
+  .grand-total .cap{font-size:11.5px}
+  .grand-total .amount{font-size:27px}
+  .table-wrap{overflow:visible}
+  .estimate-table{
+    min-width:0;
+    font-size:9.2px;
+  }
+  .estimate-table th{
+    padding:4px 3px;
+    font-size:9px;
+    background:#dce8f6!important;
+    print-color-adjust:exact;
+    -webkit-print-color-adjust:exact;
+  }
+  .estimate-table td{
+    height:20px;
+    padding:3px;
+  }
+  .summary-table{
+    width:285px;
+    margin-top:8px;
+    font-size:9.8px;
+  }
+  .summary-table td{
+    padding:5px 7px;
+  }
+  .summary-table tr:last-child td{
+    background:#dce8f6!important;
+    print-color-adjust:exact;
+    -webkit-print-color-adjust:exact;
+    font-size:12px;
+  }
+  .note-box{
+    margin-top:8px;
+    padding:8px;
+    min-height:45px;
+    font-size:9.5px;
+  }
+}
+</style>
 </head>
-
 <body>
-  <div class="app">
-    <header>
-      <h1>簡易見積書</h1>
-      <p class="lead">スマホでササっと作成、LINE・メール共有対応</p>
-    </header>
+<div class="app">
+  <header>
+    <h1>簡易見積書</h1>
+    <p class="lead">スマホでササっと作成、LINE・メール共有対応</p>
+  </header>
 
-    <section class="card input-area">
-      <label for="title">タイトル</label>
-      <input id="title" value="簡易見積書" />
+  <section class="card input-area">
+    <label for="title">タイトル</label>
+    <input id="title" value="簡易見積書">
 
-      <label for="customer">宛名</label>
-      <input id="customer" placeholder="例：〇〇 様" />
+    <label for="customer">宛名</label>
+    <input id="customer" placeholder="例：〇〇 様">
 
-      <label for="site">現場名</label>
-      <input id="site" placeholder="例：〇〇マンション" />
+    <label for="site">現場名</label>
+    <input id="site" placeholder="例：〇〇マンション">
 
-      <label for="date">発行日</label>
-      <input id="date" type="date" />
+    <label for="date">発行日</label>
+    <input id="date" type="date">
 
-      <label for="companySelect">自社名</label>
-      <select id="companySelect">
-        <option value="白髪外装">白髪外装</option>
-        <option value="株式会社ビルスター">株式会社ビルスター</option>
-      </select>
+    <label for="companySelect">自社名</label>
+    <select id="companySelect">
+      <option value="白髪外装">白髪外装</option>
+      <option value="株式会社ビルスター">株式会社ビルスター</option>
+    </select>
 
-      <label>工事明細</label>
-      <div id="items"></div>
+    <label>工事明細</label>
+    <div id="items"></div>
 
-      <div class="mini-actions">
-        <button type="button" id="addItemBtn" class="btn-sub">＋ 行追加</button>
-        <button type="button" id="presetBtn" class="btn-light">よく使う工事</button>
+    <div class="mini-actions">
+      <button type="button" id="addItemBtn" class="btn-sub">＋ 行追加</button>
+      <button type="button" id="presetBtn" class="btn-light">よく使う工事</button>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="expense">諸経費</label>
+        <input id="expense" type="number" inputmode="numeric" placeholder="0">
       </div>
-
-      <div class="row">
-        <div>
-          <label for="expense">諸経費</label>
-          <input id="expense" type="number" inputmode="numeric" placeholder="0" />
-        </div>
-        <div>
-          <label for="discount">値引き</label>
-          <input id="discount" type="number" inputmode="numeric" placeholder="0" />
-        </div>
+      <div>
+        <label for="discount">値引き</label>
+        <input id="discount" type="number" inputmode="numeric" placeholder="0">
       </div>
+    </div>
 
-      <label for="taxMode">消費税</label>
-      <select id="taxMode">
-        <option value="tax10">税別 10%を加算</option>
-        <option value="included">税込として表示</option>
-        <option value="none">消費税なし</option>
-      </select>
+    <label for="taxMode">消費税</label>
+    <select id="taxMode">
+      <option value="tax10">税別 10%を加算</option>
+      <option value="included">税込として表示</option>
+      <option value="none">消費税なし</option>
+    </select>
 
-      <label for="note">備考</label>
-      <textarea id="note" placeholder="例：作業日は別途ご相談となります。"></textarea>
+    <label for="note">備考</label>
+    <textarea id="note" placeholder="例：作業日は別途ご相談となります。"></textarea>
 
-      <div class="total-box">
-        <div class="total-line"><span>小計</span><span id="subTotalText">￥0</span></div>
-        <div class="total-line"><span>消費税</span><span id="taxText">￥0</span></div>
-        <div class="total-line big"><span>合計</span><span id="totalText">￥0</span></div>
-      </div>
-    </section>
+    <div class="total-box">
+      <div class="total-line"><span>小計</span><span id="subTotalText">￥0</span></div>
+      <div class="total-line"><span>消費税</span><span id="taxText">￥0</span></div>
+      <div class="total-line big"><span>合計</span><span id="totalText">￥0</span></div>
+    </div>
+  </section>
 
-    <section class="card">
-      <div class="preview-label hide-print">プレビュー</div>
-      <div id="preview" class="estimate-sheet"></div>
-      <div id="copyText" class="copy-text"></div>
-    </section>
-  </div>
+  <section class="card">
+    <div class="preview-label hide-print">プレビュー</div>
+    <div id="preview" class="estimate-sheet"></div>
+    <div id="copyText" class="copy-text"></div>
+  </section>
+</div>
 
-  <div class="actions">
-    <button type="button" id="copyBtn">コピー</button>
-    <button type="button" id="pdfBtn" class="btn-ok">PDF</button>
-    <button type="button" id="shareBtn" class="btn-sub">共有</button>
-    <button type="button" id="lineBtn">LINE</button>
-    <button type="button" id="mailBtn" class="btn-sub">メール</button>
-    <button type="button" id="clearBtn" class="btn-light">リセット</button>
-  </div>
+<div class="actions">
+  <button type="button" id="copyBtn">コピー</button>
+  <button type="button" id="pdfBtn" class="btn-ok">PDF</button>
+  <button type="button" id="shareBtn" class="btn-sub">共有</button>
+  <button type="button" id="lineBtn">LINE</button>
+  <button type="button" id="mailBtn" class="btn-sub">メール</button>
+  <button type="button" id="clearBtn" class="btn-light">リセット</button>
+</div>
 
-  <div id="toast" class="toast">コピーしました</div>
+<div id="toast" class="toast">コピーしました</div>
 
 <script>
 (function(){
@@ -631,7 +558,6 @@
   function addItem(data = {}){
     const wrap = document.createElement("div");
     wrap.className = "item";
-
     wrap.innerHTML = `
       <div class="item-head">
         <div class="item-title">工事明細</div>
@@ -659,7 +585,6 @@
         </div>
       </div>
     `;
-
     $("items").appendChild(wrap);
 
     wrap.querySelectorAll("input,textarea").forEach(el => {
@@ -667,7 +592,6 @@
     });
 
     wrap.querySelector(".remove-btn").addEventListener("click", () => removeItem(wrap));
-
     render();
   }
 
@@ -732,16 +656,7 @@
     const tax = taxMode === "tax10" ? Math.floor(base * 0.1) : 0;
     const total = taxMode === "tax10" ? base + tax : base;
 
-    return {
-      items,
-      expense,
-      discount,
-      taxMode,
-      sub,
-      base,
-      tax,
-      total
-    };
+    return {items, expense, discount, taxMode, sub, base, tax, total};
   }
 
   function render(){
@@ -787,7 +702,7 @@
         </tr>
       `;
 
-    const blankRows = Array.from({length:8}).map(()=>`
+    const blankRows = Array.from({length:4}).map(()=>`
       <tr>
         <td class="no">&nbsp;</td>
         <td class="content"></td>
@@ -800,9 +715,7 @@
     `).join("");
 
     $("preview").innerHTML = `
-      <div class="sheet-top">
-        <div class="sheet-title">御 見 積 書</div>
-      </div>
+      <div class="sheet-title">御 見 積 書</div>
 
       <div class="sheet-body">
         <div class="top-grid">
@@ -941,13 +854,15 @@ ${company.person}`;
 
   function saveDraft(){
     try{
-      localStorage.setItem("spotEstimateDraftV3", JSON.stringify(draftData()));
+      localStorage.setItem("spotEstimateDraftV4", JSON.stringify(draftData()));
     }catch(e){}
   }
 
   function loadDraft(){
-    const raw = localStorage.getItem("spotEstimateDraftV3")
-      || localStorage.getItem("spotEstimateDraftV2");
+    const raw =
+      localStorage.getItem("spotEstimateDraftV4") ||
+      localStorage.getItem("spotEstimateDraftV3") ||
+      localStorage.getItem("spotEstimateDraftV2");
 
     if(!raw){
       addItem({qty:"1",unit:"式"});
@@ -966,7 +881,6 @@ ${company.person}`;
       $("discount").value = d.discount || "";
       $("taxMode").value = d.taxMode || "tax10";
       $("note").value = d.note || "";
-
       $("items").innerHTML = "";
 
       const arr = d.items && d.items.length
@@ -1033,6 +947,7 @@ ${company.person}`;
   function clearForm(){
     if(!confirm("入力内容をリセットしますか？")) return;
 
+    localStorage.removeItem("spotEstimateDraftV4");
     localStorage.removeItem("spotEstimateDraftV3");
     localStorage.removeItem("spotEstimateDraftV2");
 
