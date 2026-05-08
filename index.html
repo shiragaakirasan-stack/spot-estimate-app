@@ -4,807 +4,290 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>簡易見積書</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <style>
 :root{
-  --bg:#f4f6f8;
-  --card:#fff;
-  --main:#1f2937;
-  --sub:#6b7280;
-  --line:#d8dee8;
-  --accent:#2563eb;
-  --dark:#111827;
-  --danger:#dc2626;
-  --ok:#16a34a;
-  --blue:#dce8f6;
-  --blue2:#7f9dbd;
-  --ink:#334155;
+  --bg:#f4f6f8;--card:#fff;--main:#1f2937;--sub:#6b7280;--line:#d8dee8;
+  --accent:#2563eb;--dark:#111827;--danger:#dc2626;--ok:#16a34a;
 }
 *{box-sizing:border-box}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--main);
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  line-height:1.6;
-}
-.app{
-  max-width:760px;
-  margin:0 auto;
-  padding:14px 14px 130px;
-}
+body{margin:0;background:var(--bg);color:var(--main);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}
+.app{max-width:760px;margin:0 auto;padding:14px 14px 130px}
 header{padding:10px 2px 16px}
-h1{margin:0;font-size:24px;letter-spacing:.04em}
+h1{margin:0;font-size:24px}
 .lead{margin:4px 0 0;color:var(--sub);font-size:13px}
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:14px;
-  box-shadow:0 8px 22px rgba(15,23,42,.06);
-  margin-bottom:14px;
-}
-label{
-  display:block;
-  font-weight:800;
-  font-size:13px;
-  margin:12px 0 6px;
-}
-input,textarea,select{
-  width:100%;
-  border:1px solid #cfd6df;
-  border-radius:12px;
-  padding:12px;
-  font-size:16px;
-  background:#fff;
-  color:var(--main);
-  outline:none;
-}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 8px 22px rgba(15,23,42,.06);margin-bottom:14px}
+label{display:block;font-weight:800;font-size:13px;margin:12px 0 6px}
+input,textarea,select{width:100%;border:1px solid #cfd6df;border-radius:12px;padding:12px;font-size:16px;background:#fff;color:var(--main);outline:none}
 textarea{min-height:78px;resize:vertical}
-input:focus,textarea:focus,select:focus{
-  border-color:var(--accent);
-  box-shadow:0 0 0 3px rgba(37,99,235,.12);
-}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.item{
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:12px;
-  margin-top:10px;
-  background:#fafafa;
-}
-.item-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin-bottom:4px;
-}
+.item{border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px;background:#fafafa}
+.item-head{display:flex;justify-content:space-between;align-items:center}
 .item-title{font-weight:900;font-size:13px;color:var(--sub)}
-button{
-  border:0;
-  border-radius:999px;
-  padding:12px 14px;
-  font-weight:900;
-  font-size:14px;
-  cursor:pointer;
-  color:#fff;
-  background:var(--accent);
-  touch-action:manipulation;
-}
-button:active{transform:translateY(1px)}
-.btn-sub{background:#4b5563}
-.btn-danger{background:var(--danger);padding:8px 10px;font-size:12px}
-.btn-ok{background:var(--ok)}
-.btn-light{background:#e5e7eb;color:var(--main)}
-.mini-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:12px;
-}
-.actions{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  background:rgba(255,255,255,.96);
-  backdrop-filter:blur(12px);
-  border-top:1px solid var(--line);
-  padding:10px 12px max(10px,env(safe-area-inset-bottom));
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:8px;
-  max-width:760px;
-  margin:0 auto;
-  z-index:20;
-}
-.total-box{
-  background:var(--dark);
-  color:#fff;
-  border-radius:18px;
-  padding:14px;
-  margin-top:12px;
-}
-.total-line{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  font-size:14px;
-}
-.total-line.big{
-  font-size:22px;
-  font-weight:950;
-  border-top:1px solid rgba(255,255,255,.25);
-  margin-top:8px;
-  padding-top:8px;
-}
+button{border:0;border-radius:999px;padding:12px 14px;font-weight:900;font-size:14px;cursor:pointer;color:#fff;background:var(--accent)}
+.btn-sub{background:#4b5563}.btn-danger{background:var(--danger);padding:8px 10px;font-size:12px}.btn-ok{background:var(--ok)}.btn-light{background:#e5e7eb;color:var(--main)}
+.mini-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.actions{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:10px 12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;max-width:760px;margin:0 auto;z-index:20}
+.total-box{background:var(--dark);color:#fff;border-radius:18px;padding:14px;margin-top:12px}
+.total-line{display:flex;justify-content:space-between;font-size:14px}
+.total-line.big{font-size:22px;font-weight:950;border-top:1px solid rgba(255,255,255,.25);margin-top:8px;padding-top:8px}
 .preview-label{font-weight:950;margin-bottom:8px}
 
-/* 見積書本体 */
-.estimate-sheet{
-  background:#fff;
-  color:#334155;
-  border:0;
-  border-radius:0;
-  overflow:hidden;
-  font-family:"Yu Gothic","Meiryo","MS PGothic",sans-serif;
-  padding:24px 26px 20px;
-  box-shadow:none;
-  max-width:794px;
-  margin:0 auto;
-}
-.sheet-title{
-  text-align:center;
-  font-size:28px;
-  font-weight:700;
-  letter-spacing:.45em;
-  color:#334155;
-  border-bottom:3px double #7f9dbd;
-  padding:4px 0 10px;
-  width:60%;
-  margin:0 auto 18px;
-}
-.sheet-body{padding:0}
-.top-grid{
-  display:grid;
-  grid-template-columns:1fr 230px;
-  gap:18px;
-  align-items:start;
-  margin-bottom:12px;
-}
-.customer-name{
-  font-size:18px;
-  font-weight:700;
-  border-bottom:2px solid #7f9dbd;
-  padding-bottom:8px;
-  margin-bottom:10px;
-  color:#1e293b;
-}
-.message{
-  font-size:12px;
-  color:#64748b;
-}
-.box{
-  border:1px solid #cbd5e1;
-  border-radius:0;
-  padding:7px 9px;
-  font-size:12px;
-  background:#fff;
-  margin-bottom:8px;
-}
-.label-small{
-  display:block;
-  color:#64748b;
-  font-size:10px;
-  font-weight:900;
-  margin-bottom:2px;
-}
-.company-box{
-  text-align:right;
-  border:0;
-  padding:2px 0 0;
-  color:#475569;
-  line-height:1.65;
-  font-size:10.5px;
-  white-space:pre-wrap;
-}
-.grand-total{
-  border:2px solid #7f9dbd;
-  border-left:8px solid #7f9dbd;
-  padding:10px 12px;
-  margin:14px 0;
-  background:#f8fbff;
-  display:grid;
-  grid-template-columns:140px 1fr;
-  align-items:center;
-}
-.grand-total .cap{
-  font-size:13px;
-  font-weight:800;
-  color:#475569;
-}
-.grand-total .amount{
-  text-align:right;
-  font-size:32px;
-  font-weight:900;
-  line-height:1.2;
-  color:#0f172a;
-}
-.table-wrap{
-  width:100%;
-  overflow-x:auto;
-  border:1.5px solid #7f9dbd;
-  border-radius:0;
-}
-.estimate-table{
-  width:100%;
-  min-width:690px;
-  border-collapse:collapse;
-  font-size:10.5px;
-}
-.estimate-table th{
-  background:#dce8f6;
-  color:#334155;
-  border:1px solid #7f9dbd;
-  padding:6px 4px;
-  text-align:center;
-  font-size:10px;
-  white-space:nowrap;
-  font-weight:800;
-}
-.estimate-table td{
-  border:1px solid #a9bad0;
-  padding:5px 4px;
-  vertical-align:top;
-  background:#fff;
-  height:24px;
-}
-.no{width:34px;text-align:center}
-.content{min-width:145px}
-.detail{min-width:215px;color:#374151;white-space:pre-wrap}
-.qty{width:58px;text-align:right;white-space:nowrap}
-.unit{width:46px;text-align:center;white-space:nowrap}
-.price{width:88px;text-align:right;white-space:nowrap;font-weight:800}
-.summary-table{
-  width:310px;
-  margin-left:auto;
-  border-collapse:collapse;
-  margin-top:12px;
-  font-size:11px;
-  border:1.5px solid #7f9dbd;
-  break-inside:avoid;
-  page-break-inside:avoid;
-}
-.summary-table td{
-  padding:7px 9px;
-  border-bottom:1px solid #cbd5e1;
-}
-.summary-table td:last-child{
-  text-align:right;
-  font-weight:800;
-}
-.summary-table tr:last-child td{
-  background:#dce8f6;
-  color:#1e293b;
-  font-size:14px;
-  font-weight:900;
-  border-bottom:0;
-}
-.note-box{
-  margin-top:12px;
-  border:1.5px solid #cbd5e1;
-  border-radius:0;
-  padding:10px;
-  font-size:10.5px;
-  white-space:pre-wrap;
-  min-height:58px;
-  background:#fff;
-  break-inside:avoid;
-  page-break-inside:avoid;
-}
-.toast{
-  position:fixed;
-  left:50%;
-  bottom:92px;
-  transform:translateX(-50%);
-  background:#111827;
-  color:#fff;
-  padding:10px 14px;
-  border-radius:999px;
-  font-size:13px;
-  opacity:0;
-  pointer-events:none;
-  transition:.2s;
-  z-index:30;
-}
+.estimate-sheet{background:#fff;color:#334155;font-family:"Yu Gothic","Meiryo",sans-serif;padding:24px 26px 20px;max-width:794px;margin:0 auto}
+.sheet-title{text-align:center;font-size:28px;font-weight:700;letter-spacing:.45em;color:#334155;border-bottom:3px double #7f9dbd;padding:4px 0 10px;width:60%;margin:0 auto 18px}
+.top-grid{display:grid;grid-template-columns:1fr 230px;gap:18px;margin-bottom:12px}
+.customer-name{font-size:18px;font-weight:700;border-bottom:2px solid #7f9dbd;padding-bottom:8px;margin-bottom:10px;color:#1e293b}
+.message{font-size:12px;color:#64748b}
+.box{border:1px solid #cbd5e1;padding:7px 9px;font-size:12px;background:#fff;margin-bottom:8px}
+.label-small{display:block;color:#64748b;font-size:10px;font-weight:900;margin-bottom:2px}
+.company-box{text-align:right;color:#475569;line-height:1.65;font-size:10.5px;white-space:pre-wrap}
+.grand-total{border:2px solid #7f9dbd;border-left:8px solid #7f9dbd;padding:10px 12px;margin:14px 0;background:#f8fbff;display:grid;grid-template-columns:140px 1fr;align-items:center}
+.grand-total .cap{font-size:13px;font-weight:800}
+.grand-total .amount{text-align:right;font-size:32px;font-weight:900;color:#0f172a}
+.table-wrap{width:100%;overflow-x:auto;border:1.5px solid #7f9dbd}
+.estimate-table{width:100%;min-width:690px;border-collapse:collapse;font-size:10.5px}
+.estimate-table th{background:#dce8f6;color:#334155;border:1px solid #7f9dbd;padding:6px 4px;text-align:center;font-size:10px;font-weight:800}
+.estimate-table td{border:1px solid #a9bad0;padding:5px 4px;vertical-align:top;background:#fff;height:24px}
+.no{width:34px;text-align:center}.content{min-width:145px}.detail{min-width:215px;white-space:pre-wrap}.qty{width:58px;text-align:right}.unit{width:46px;text-align:center}.price{width:88px;text-align:right;font-weight:800}
+.summary-table{width:310px;margin-left:auto;border-collapse:collapse;margin-top:12px;font-size:11px;border:1.5px solid #7f9dbd}
+.summary-table td{padding:7px 9px;border-bottom:1px solid #cbd5e1}
+.summary-table td:last-child{text-align:right;font-weight:800}
+.summary-table tr:last-child td{background:#dce8f6;color:#1e293b;font-size:14px;font-weight:900}
+.note-box{margin-top:12px;border:1.5px solid #cbd5e1;padding:10px;font-size:10.5px;white-space:pre-wrap;min-height:58px;background:#fff}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 14px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:30}
 .toast.show{opacity:1;bottom:106px}
-.copy-text{
-  position:absolute;
-  left:-9999px;
-  top:-9999px;
-  white-space:pre-wrap;
-}
-.hide-print{display:block}
-
-@media print{
-  @page{
-    size:A4 portrait;
-    margin:8mm;
-  }
-  body{background:#fff}
-  header,.input-area,.actions,.mini-actions,.hide-print,.toast{
-    display:none!important;
-  }
-  .app{
-    max-width:none;
-    padding:0;
-  }
-  .card{
-    border:0;
-    box-shadow:none;
-    padding:0;
-    margin:0;
-  }
-  .estimate-sheet{
-    padding:8mm 8mm 6mm;
-    max-width:none;
-  }
-  .sheet-title{
-    font-size:24px;
-    margin-bottom:10px;
-    padding-bottom:7px;
-  }
-  .top-grid{
-    grid-template-columns:1fr 210px;
-    gap:14px;
-    margin-bottom:8px;
-  }
-  .customer-name{
-    font-size:16px;
-    padding-bottom:6px;
-    margin-bottom:6px;
-  }
-  .message{font-size:10.5px}
-  .box{
-    padding:5px 7px;
-    font-size:10.5px;
-    margin-bottom:6px;
-  }
-  .company-box{
-    font-size:9.3px;
-    line-height:1.45;
-  }
-  .grand-total{
-    margin:9px 0;
-    padding:8px 10px;
-    grid-template-columns:120px 1fr;
-  }
-  .grand-total .cap{font-size:11.5px}
-  .grand-total .amount{font-size:27px}
-  .table-wrap{overflow:visible}
-  .estimate-table{
-    min-width:0;
-    font-size:9.2px;
-  }
-  .estimate-table th{
-    padding:4px 3px;
-    font-size:9px;
-    background:#dce8f6!important;
-    print-color-adjust:exact;
-    -webkit-print-color-adjust:exact;
-  }
-  .estimate-table td{
-    height:20px;
-    padding:3px;
-  }
-  .summary-table{
-    width:285px;
-    margin-top:8px;
-    font-size:9.8px;
-  }
-  .summary-table td{
-    padding:5px 7px;
-  }
-  .summary-table tr:last-child td{
-    background:#dce8f6!important;
-    print-color-adjust:exact;
-    -webkit-print-color-adjust:exact;
-    font-size:12px;
-  }
-  .note-box{
-    margin-top:8px;
-    padding:8px;
-    min-height:45px;
-    font-size:9.5px;
-  }
-}
+.copy-text{position:absolute;left:-9999px;top:-9999px;white-space:pre-wrap}
 </style>
 </head>
+
 <body>
 <div class="app">
-  <header>
-    <h1>簡易見積書</h1>
-    <p class="lead">スマホでササっと作成、LINE・メール共有対応</p>
-  </header>
+<header>
+  <h1>簡易見積書</h1>
+  <p class="lead">スマホでササっと作成、PDF共有対応</p>
+</header>
 
-  <section class="card input-area">
-    <label for="title">タイトル</label>
-    <input id="title" value="簡易見積書">
+<section class="card input-area">
+<label for="title">タイトル</label><input id="title" value="簡易見積書">
+<label for="customer">宛名</label><input id="customer" placeholder="例：〇〇 様">
+<label for="site">現場名</label><input id="site" placeholder="例：〇〇マンション">
+<label for="date">発行日</label><input id="date" type="date">
 
-    <label for="customer">宛名</label>
-    <input id="customer" placeholder="例：〇〇 様">
+<label for="companySelect">自社名</label>
+<select id="companySelect">
+<option value="白髪外装">白髪外装</option>
+<option value="株式会社ビルスター">株式会社ビルスター</option>
+</select>
 
-    <label for="site">現場名</label>
-    <input id="site" placeholder="例：〇〇マンション">
+<label>工事明細</label>
+<div id="items"></div>
 
-    <label for="date">発行日</label>
-    <input id="date" type="date">
+<div class="mini-actions">
+<button type="button" id="addItemBtn" class="btn-sub">＋ 行追加</button>
+<button type="button" id="presetBtn" class="btn-light">よく使う工事</button>
+</div>
 
-    <label for="companySelect">自社名</label>
-    <select id="companySelect">
-      <option value="白髪外装">白髪外装</option>
-      <option value="株式会社ビルスター">株式会社ビルスター</option>
-    </select>
+<div class="row">
+<div><label for="expense">諸経費</label><input id="expense" type="number" inputmode="numeric" placeholder="0"></div>
+<div><label for="discount">値引き</label><input id="discount" type="number" inputmode="numeric" placeholder="0"></div>
+</div>
 
-    <label>工事明細</label>
-    <div id="items"></div>
+<label for="taxMode">消費税</label>
+<select id="taxMode">
+<option value="tax10">税別 10%を加算</option>
+<option value="included">税込として表示</option>
+<option value="none">消費税なし</option>
+</select>
 
-    <div class="mini-actions">
-      <button type="button" id="addItemBtn" class="btn-sub">＋ 行追加</button>
-      <button type="button" id="presetBtn" class="btn-light">よく使う工事</button>
-    </div>
+<label for="note">備考</label>
+<textarea id="note" placeholder="例：作業日は別途ご相談となります。"></textarea>
 
-    <div class="row">
-      <div>
-        <label for="expense">諸経費</label>
-        <input id="expense" type="number" inputmode="numeric" placeholder="0">
-      </div>
-      <div>
-        <label for="discount">値引き</label>
-        <input id="discount" type="number" inputmode="numeric" placeholder="0">
-      </div>
-    </div>
+<div class="total-box">
+<div class="total-line"><span>小計</span><span id="subTotalText">￥0</span></div>
+<div class="total-line"><span>消費税</span><span id="taxText">￥0</span></div>
+<div class="total-line big"><span>合計</span><span id="totalText">￥0</span></div>
+</div>
+</section>
 
-    <label for="taxMode">消費税</label>
-    <select id="taxMode">
-      <option value="tax10">税別 10%を加算</option>
-      <option value="included">税込として表示</option>
-      <option value="none">消費税なし</option>
-    </select>
-
-    <label for="note">備考</label>
-    <textarea id="note" placeholder="例：作業日は別途ご相談となります。"></textarea>
-
-    <div class="total-box">
-      <div class="total-line"><span>小計</span><span id="subTotalText">￥0</span></div>
-      <div class="total-line"><span>消費税</span><span id="taxText">￥0</span></div>
-      <div class="total-line big"><span>合計</span><span id="totalText">￥0</span></div>
-    </div>
-  </section>
-
-  <section class="card">
-    <div class="preview-label hide-print">プレビュー</div>
-    <div id="preview" class="estimate-sheet"></div>
-    <div id="copyText" class="copy-text"></div>
-  </section>
+<section class="card">
+<div class="preview-label">プレビュー</div>
+<div id="preview" class="estimate-sheet"></div>
+<div id="copyText" class="copy-text"></div>
+</section>
 </div>
 
 <div class="actions">
-  <button type="button" id="copyBtn">コピー</button>
-  <button type="button" id="pdfBtn" class="btn-ok">PDF</button>
-  <button type="button" id="shareBtn" class="btn-sub">共有</button>
-  <button type="button" id="lineBtn">LINE</button>
-  <button type="button" id="mailBtn" class="btn-sub">メール</button>
-  <button type="button" id="clearBtn" class="btn-light">リセット</button>
+<button type="button" id="copyBtn">コピー</button>
+<button type="button" id="pdfBtn" class="btn-ok">PDF保存</button>
+<button type="button" id="shareBtn" class="btn-sub">共有</button>
+<button type="button" id="lineBtn">LINE</button>
+<button type="button" id="mailBtn" class="btn-sub">メール</button>
+<button type="button" id="clearBtn" class="btn-light">リセット</button>
 </div>
 
 <div id="toast" class="toast">コピーしました</div>
 
 <script>
 (function(){
-  const presets = [
-    "雨漏り調査",
-    "高圧洗浄作業",
-    "シーリング補修",
-    "外壁タッチアップ",
-    "鉄部タッチアップ",
-    "コーキング打替え",
-    "ひび割れ補修",
-    "タイル補修",
-    "清掃作業",
-    "現地確認費"
-  ];
+const presets=["雨漏り調査","高圧洗浄作業","シーリング補修","外壁タッチアップ","鉄部タッチアップ","コーキング打替え","ひび割れ補修","タイル補修","清掃作業","現地確認費"];
 
-  const companyInfo = {
-    "白髪外装": {
-      name: "白髪外装",
-      address: "〒546-0023 大阪市東住吉区矢田4-1-15",
-      tel: "連絡先 090-9115-5568",
-      person: "担当 白髪 章"
-    },
-    "株式会社ビルスター": {
-      name: "株式会社ビルスター",
-      address: "本社 〒607-8352 京都市山科区西野岸ノ下町33-2\n大阪 〒546-0023 大阪市東住吉区矢田4-11-15",
-      tel: "連絡先 090-9115-5586",
-      person: "担当 白髪 章"
-    }
+const companyInfo={
+"白髪外装":{name:"白髪外装",address:"〒546-0023 大阪市東住吉区矢田4-1-15",tel:"連絡先 090-9115-5568",person:"担当 白髪 章"},
+"株式会社ビルスター":{name:"株式会社ビルスター",address:"本社 〒607-8352 京都市山科区西野岸ノ下町33-2\n大阪 〒546-0023 大阪市東住吉区矢田4-11-15",tel:"連絡先 090-9115-5586",person:"担当 白髪 章"}
+};
+
+const $=id=>document.getElementById(id);
+const yen=n=>"￥"+Math.round(Number(n||0)).toLocaleString("ja-JP");
+const esc=s=>String(s||"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+const today=()=>new Date().toISOString().slice(0,10);
+
+function showToast(msg){
+ const t=$("toast");
+ t.textContent=msg;
+ t.classList.add("show");
+ setTimeout(()=>t.classList.remove("show"),1600);
+}
+
+function addItem(data={}){
+ const wrap=document.createElement("div");
+ wrap.className="item";
+ wrap.innerHTML=`
+ <div class="item-head">
+  <div class="item-title">工事明細</div>
+  <button type="button" class="btn-danger remove-btn">削除</button>
+ </div>
+ <label>工事名</label>
+ <input class="work-name" placeholder="例：シーリング補修" value="${esc(data.name)}">
+ <label>工事詳細</label>
+ <textarea class="work-detail" placeholder="例：サッシ廻り シール撤去打替え">${esc(data.detail)}</textarea>
+ <div class="row3">
+  <div><label>数量</label><input class="work-qty" type="number" inputmode="decimal" placeholder="1" value="${esc(data.qty)}"></div>
+  <div><label>単位</label><input class="work-unit" placeholder="式" value="${esc(data.unit||"式")}"></div>
+  <div><label>単価</label><input class="work-price" type="number" inputmode="numeric" placeholder="25000" value="${esc(data.price)}"></div>
+ </div>`;
+ $("items").appendChild(wrap);
+ wrap.querySelectorAll("input,textarea").forEach(el=>el.addEventListener("input",render));
+ wrap.querySelector(".remove-btn").addEventListener("click",()=>removeItem(wrap));
+ render();
+}
+
+function removeItem(row){
+ const all=document.querySelectorAll(".item");
+ if(all.length<=1){
+  row.querySelector(".work-name").value="";
+  row.querySelector(".work-detail").value="";
+  row.querySelector(".work-qty").value="";
+  row.querySelector(".work-unit").value="式";
+  row.querySelector(".work-price").value="";
+ }else row.remove();
+ render();
+}
+
+function addPreset(){
+ const list=presets.map((p,i)=>`${i+1}. ${p}`).join("\n");
+ const pick=prompt("追加する工事番号を入力してください\n\n"+list);
+ const idx=Number(pick)-1;
+ if(presets[idx]) addItem({name:presets[idx],detail:"",qty:"1",unit:"式",price:""});
+}
+
+function readItems(){
+ return [...document.querySelectorAll(".item")].map(row=>{
+  const qtyRaw=row.querySelector(".work-qty").value.trim();
+  const qty=Number(qtyRaw||1)||1;
+  const price=Number(row.querySelector(".work-price").value||0);
+  return{
+   name:row.querySelector(".work-name").value.trim(),
+   detail:row.querySelector(".work-detail").value.trim(),
+   qtyRaw,qty,
+   unit:row.querySelector(".work-unit").value.trim()||"式",
+   price,amount:qty*price
   };
+ }).filter(x=>x.name||x.detail||x.price);
+}
 
-  const $ = (id) => document.getElementById(id);
+function getCalc(){
+ const items=readItems();
+ const expense=Number($("expense").value||0);
+ const discount=Number($("discount").value||0);
+ const taxMode=$("taxMode").value;
+ const sub=items.reduce((s,x)=>s+x.amount,0);
+ const base=sub+expense-discount;
+ const tax=taxMode==="tax10"?Math.floor(base*0.1):0;
+ const total=taxMode==="tax10"?base+tax:base;
+ return{items,expense,discount,taxMode,sub,base,tax,total};
+}
 
-  const yen = (n) => {
-    const num = Math.round(Number(n || 0));
-    return "￥" + num.toLocaleString("ja-JP");
-  };
+function render(){
+ const title=$("title").value.trim()||"簡易見積書";
+ const customer=$("customer").value.trim()||"＿＿＿＿ 様";
+ const site=$("site").value.trim()||"未入力";
+ const date=$("date").value||"未入力";
+ const note=$("note").value.trim()||"作業内容・日程は別途ご相談となります。";
+ const company=companyInfo[$("companySelect").value]||companyInfo["白髪外装"];
+ const v=getCalc();
+ const taxLabel=v.taxMode==="tax10"?yen(v.tax):v.taxMode==="included"?"税込":"なし";
 
-  const esc = (s) => String(s || "").replace(/[&<>'"]/g, c => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    "'":"&#39;",
-    '"':"&quot;"
-  }[c]));
+ $("subTotalText").textContent=yen(v.base);
+ $("taxText").textContent=taxLabel;
+ $("totalText").textContent=yen(v.total);
 
-  const today = () => new Date().toISOString().slice(0,10);
+ const rows=v.items.length?v.items.map((item,i)=>`
+ <tr>
+  <td class="no">${i+1}</td>
+  <td class="content">${esc(item.name||"工事一式")}</td>
+  <td class="detail">${esc(item.detail||"")}</td>
+  <td class="qty">${esc(item.qtyRaw||"1")}</td>
+  <td class="unit">${esc(item.unit||"式")}</td>
+  <td class="price">${yen(item.price)}</td>
+  <td class="price">${yen(item.amount)}</td>
+ </tr>`).join(""):`
+ <tr><td class="no">1</td><td class="content">工事内容未入力</td><td class="detail"></td><td class="qty">1</td><td class="unit">式</td><td class="price">￥0</td><td class="price">￥0</td></tr>`;
 
-  function showToast(msg){
-    const t = $("toast");
-    t.textContent = msg;
-    t.classList.add("show");
-    setTimeout(() => t.classList.remove("show"), 1600);
-  }
+ const blankRows=Array.from({length:4}).map(()=>`
+ <tr><td class="no">&nbsp;</td><td class="content"></td><td class="detail"></td><td class="qty"></td><td class="unit"></td><td class="price"></td><td class="price"></td></tr>`).join("");
 
-  function addItem(data = {}){
-    const wrap = document.createElement("div");
-    wrap.className = "item";
-    wrap.innerHTML = `
-      <div class="item-head">
-        <div class="item-title">工事明細</div>
-        <button type="button" class="btn-danger remove-btn">削除</button>
-      </div>
+ $("preview").innerHTML=`
+ <div class="sheet-title">御 見 積 書</div>
+ <div class="sheet-body">
+  <div class="top-grid">
+   <div>
+    <div class="customer-name">${esc(customer)}</div>
+    <div class="message">下記の通り御見積申し上げます。</div>
+   </div>
+   <div>
+    <div class="box"><span class="label-small">発行日</span>${esc(date)}</div>
+    <div class="company-box">${esc(company.name)}<br>${esc(company.address)}<br>${esc(company.tel)}<br>${esc(company.person)}</div>
+   </div>
+  </div>
+  <div class="box"><span class="label-small">現場名</span>${esc(site)}</div>
+  <div class="grand-total"><div class="cap">御見積金額</div><div class="amount">${yen(v.total)}-</div></div>
+  <div class="table-wrap">
+   <table class="estimate-table">
+    <thead><tr><th>No.</th><th>工事名</th><th>工事詳細</th><th>数量</th><th>単位</th><th>単価</th><th>金額</th></tr></thead>
+    <tbody>${rows}${blankRows}</tbody>
+   </table>
+  </div>
+  <table class="summary-table">
+   <tr><td>工事小計</td><td>${yen(v.sub)}</td></tr>
+   ${v.expense?`<tr><td>諸経費</td><td>${yen(v.expense)}</td></tr>`:""}
+   ${v.discount?`<tr><td>値引き</td><td>-${yen(v.discount)}</td></tr>`:""}
+   <tr><td>消費税</td><td>${taxLabel}</td></tr>
+   <tr><td>合計</td><td>${yen(v.total)}</td></tr>
+  </table>
+  <div class="note-box"><span class="label-small">備考</span>${esc(note)}</div>
+ </div>`;
 
-      <label>工事名</label>
-      <input class="work-name" placeholder="例：シーリング補修" value="${esc(data.name)}">
-
-      <label>工事詳細</label>
-      <textarea class="work-detail" placeholder="例：サッシ廻り シール撤去打替え">${esc(data.detail)}</textarea>
-
-      <div class="row3">
-        <div>
-          <label>数量</label>
-          <input class="work-qty" type="number" inputmode="decimal" placeholder="1" value="${esc(data.qty)}">
-        </div>
-        <div>
-          <label>単位</label>
-          <input class="work-unit" placeholder="式" value="${esc(data.unit || "式")}">
-        </div>
-        <div>
-          <label>単価</label>
-          <input class="work-price" type="number" inputmode="numeric" placeholder="25000" value="${esc(data.price)}">
-        </div>
-      </div>
-    `;
-    $("items").appendChild(wrap);
-
-    wrap.querySelectorAll("input,textarea").forEach(el => {
-      el.addEventListener("input", render);
-    });
-
-    wrap.querySelector(".remove-btn").addEventListener("click", () => removeItem(wrap));
-    render();
-  }
-
-  function removeItem(row){
-    const all = document.querySelectorAll(".item");
-
-    if(all.length <= 1){
-      row.querySelector(".work-name").value = "";
-      row.querySelector(".work-detail").value = "";
-      row.querySelector(".work-qty").value = "";
-      row.querySelector(".work-unit").value = "式";
-      row.querySelector(".work-price").value = "";
-    }else{
-      row.remove();
-    }
-
-    render();
-  }
-
-  function addPreset(){
-    const list = presets.map((p,i)=>`${i+1}. ${p}`).join("\n");
-    const pick = prompt("追加する工事番号を入力してください\n\n" + list);
-    const idx = Number(pick) - 1;
-
-    if(presets[idx]){
-      addItem({
-        name:presets[idx],
-        detail:"",
-        qty:"1",
-        unit:"式",
-        price:""
-      });
-    }
-  }
-
-  function readItems(){
-    return [...document.querySelectorAll(".item")].map(row => {
-      const qtyRaw = row.querySelector(".work-qty").value.trim();
-      const qty = Number(qtyRaw || 1) || 1;
-      const price = Number(row.querySelector(".work-price").value || 0);
-
-      return {
-        name: row.querySelector(".work-name").value.trim(),
-        detail: row.querySelector(".work-detail").value.trim(),
-        qtyRaw,
-        qty,
-        unit: row.querySelector(".work-unit").value.trim() || "式",
-        price,
-        amount: qty * price
-      };
-    }).filter(x => x.name || x.detail || x.price);
-  }
-
-  function getCalc(){
-    const items = readItems();
-    const expense = Number($("expense").value || 0);
-    const discount = Number($("discount").value || 0);
-    const taxMode = $("taxMode").value;
-
-    const sub = items.reduce((s,x)=>s + x.amount, 0);
-    const base = sub + expense - discount;
-    const tax = taxMode === "tax10" ? Math.floor(base * 0.1) : 0;
-    const total = taxMode === "tax10" ? base + tax : base;
-
-    return {items, expense, discount, taxMode, sub, base, tax, total};
-  }
-
-  function render(){
-    const title = $("title").value.trim() || "簡易見積書";
-    const customer = $("customer").value.trim() || "＿＿＿＿ 様";
-    const site = $("site").value.trim() || "未入力";
-    const date = $("date").value || "未入力";
-    const note = $("note").value.trim() || "作業内容・日程は別途ご相談となります。";
-    const company = companyInfo[$("companySelect").value] || companyInfo["白髪外装"];
-    const v = getCalc();
-
-    const taxLabel = v.taxMode === "tax10"
-      ? yen(v.tax)
-      : v.taxMode === "included"
-        ? "税込"
-        : "なし";
-
-    $("subTotalText").textContent = yen(v.base);
-    $("taxText").textContent = taxLabel;
-    $("totalText").textContent = yen(v.total);
-
-    const rows = v.items.length
-      ? v.items.map((item,i)=>`
-        <tr>
-          <td class="no">${i+1}</td>
-          <td class="content">${esc(item.name || "工事一式")}</td>
-          <td class="detail">${esc(item.detail || "")}</td>
-          <td class="qty">${esc(item.qtyRaw || "1")}</td>
-          <td class="unit">${esc(item.unit || "式")}</td>
-          <td class="price">${yen(item.price)}</td>
-          <td class="price">${yen(item.amount)}</td>
-        </tr>
-      `).join("")
-      : `
-        <tr>
-          <td class="no">1</td>
-          <td class="content">工事内容未入力</td>
-          <td class="detail"></td>
-          <td class="qty">1</td>
-          <td class="unit">式</td>
-          <td class="price">￥0</td>
-          <td class="price">￥0</td>
-        </tr>
-      `;
-
-    const blankRows = Array.from({length:4}).map(()=>`
-      <tr>
-        <td class="no">&nbsp;</td>
-        <td class="content"></td>
-        <td class="detail"></td>
-        <td class="qty"></td>
-        <td class="unit"></td>
-        <td class="price"></td>
-        <td class="price"></td>
-      </tr>
-    `).join("");
-
-    $("preview").innerHTML = `
-      <div class="sheet-title">御 見 積 書</div>
-
-      <div class="sheet-body">
-        <div class="top-grid">
-          <div>
-            <div class="customer-name">${esc(customer)}</div>
-            <div class="message">下記の通り御見積申し上げます。</div>
-          </div>
-
-          <div>
-            <div class="box">
-              <span class="label-small">発行日</span>
-              ${esc(date)}
-            </div>
-
-            <div class="company-box">${esc(company.name)}<br>${esc(company.address)}<br>${esc(company.tel)}<br>${esc(company.person)}</div>
-          </div>
-        </div>
-
-        <div class="box">
-          <span class="label-small">現場名</span>
-          ${esc(site)}
-        </div>
-
-        <div class="grand-total">
-          <div class="cap">御見積金額</div>
-          <div class="amount">${yen(v.total)}-</div>
-        </div>
-
-        <div class="table-wrap">
-          <table class="estimate-table">
-            <thead>
-              <tr>
-                <th>No.</th>
-                <th>工事名</th>
-                <th>工事詳細</th>
-                <th>数量</th>
-                <th>単位</th>
-                <th>単価</th>
-                <th>金額</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows}
-              ${blankRows}
-            </tbody>
-          </table>
-        </div>
-
-        <table class="summary-table">
-          <tr>
-            <td>工事小計</td>
-            <td>${yen(v.sub)}</td>
-          </tr>
-          ${v.expense ? `
-          <tr>
-            <td>諸経費</td>
-            <td>${yen(v.expense)}</td>
-          </tr>` : ""}
-          ${v.discount ? `
-          <tr>
-            <td>値引き</td>
-            <td>-${yen(v.discount)}</td>
-          </tr>` : ""}
-          <tr>
-            <td>消費税</td>
-            <td>${taxLabel}</td>
-          </tr>
-          <tr>
-            <td>合計</td>
-            <td>${yen(v.total)}</td>
-          </tr>
-        </table>
-
-        <div class="note-box">
-          <span class="label-small">備考</span>
-          ${esc(note)}
-        </div>
-      </div>
-    `;
-
-    const detailText = v.items.length
-      ? v.items.map((item,i)=>`${i+1}. ${item.name || "工事一式"}
-工事詳細：${item.detail || "-"}
-数量：${item.qtyRaw || "1"}${item.unit || "式"}
+ const detailText=v.items.length?v.items.map((item,i)=>`${i+1}. ${item.name||"工事一式"}
+工事詳細：${item.detail||"-"}
+数量：${item.qtyRaw||"1"}${item.unit||"式"}
 単価：${yen(item.price)}
-金額：${yen(item.amount)}`).join("\n\n")
-      : "1. 工事内容未入力\n数量：1式\n単価：￥0\n金額：￥0";
+金額：${yen(item.amount)}`).join("\n\n"):"1. 工事内容未入力\n数量：1式\n単価：￥0\n金額：￥0";
 
-    $("copyText").textContent = `${title}
+ $("copyText").textContent=`${title}
 
 ${customer}
 
@@ -816,7 +299,7 @@ ${customer}
 【工事明細】
 ${detailText}
 
-工事小計：${yen(v.sub)}${v.expense ? `\n諸経費：${yen(v.expense)}` : ""}${v.discount ? `\n値引き：-${yen(v.discount)}` : ""}
+工事小計：${yen(v.sub)}${v.expense?`\n諸経費：${yen(v.expense)}`:""}${v.discount?`\n値引き：-${yen(v.discount)}`:""}
 消費税：${taxLabel}
 合計：${yen(v.total)}
 
@@ -828,176 +311,172 @@ ${company.address}
 ${company.tel}
 ${company.person}`;
 
-    saveDraft();
-  }
+ saveDraft();
+}
 
-  function draftData(){
-    return {
-      title:$("title").value,
-      customer:$("customer").value,
-      site:$("site").value,
-      date:$("date").value,
-      companySelect:$("companySelect").value,
-      expense:$("expense").value,
-      discount:$("discount").value,
-      taxMode:$("taxMode").value,
-      note:$("note").value,
-      items:[...document.querySelectorAll(".item")].map(row=>({
-        name:row.querySelector(".work-name").value,
-        detail:row.querySelector(".work-detail").value,
-        qty:row.querySelector(".work-qty").value,
-        unit:row.querySelector(".work-unit").value,
-        price:row.querySelector(".work-price").value
-      }))
-    };
-  }
+function draftData(){
+ return{
+  title:$("title").value,customer:$("customer").value,site:$("site").value,date:$("date").value,
+  companySelect:$("companySelect").value,expense:$("expense").value,discount:$("discount").value,
+  taxMode:$("taxMode").value,note:$("note").value,
+  items:[...document.querySelectorAll(".item")].map(row=>({
+   name:row.querySelector(".work-name").value,
+   detail:row.querySelector(".work-detail").value,
+   qty:row.querySelector(".work-qty").value,
+   unit:row.querySelector(".work-unit").value,
+   price:row.querySelector(".work-price").value
+  }))
+ };
+}
 
-  function saveDraft(){
-    try{
-      localStorage.setItem("spotEstimateDraftV4", JSON.stringify(draftData()));
-    }catch(e){}
-  }
+function saveDraft(){
+ try{localStorage.setItem("spotEstimateDraftV6",JSON.stringify(draftData()))}catch(e){}
+}
 
-  function loadDraft(){
-    const raw =
-      localStorage.getItem("spotEstimateDraftV4") ||
-      localStorage.getItem("spotEstimateDraftV3") ||
-      localStorage.getItem("spotEstimateDraftV2");
+function loadDraft(){
+ const raw=localStorage.getItem("spotEstimateDraftV6")||localStorage.getItem("spotEstimateDraftV5")||localStorage.getItem("spotEstimateDraftV4")||localStorage.getItem("spotEstimateDraftV3")||localStorage.getItem("spotEstimateDraftV2");
+ if(!raw){addItem({qty:"1",unit:"式"});return}
+ try{
+  const d=JSON.parse(raw);
+  $("title").value=d.title||"簡易見積書";
+  $("customer").value=d.customer||"";
+  $("site").value=d.site||"";
+  $("date").value=d.date||today();
+  $("companySelect").value=d.companySelect||"白髪外装";
+  $("expense").value=d.expense||"";
+  $("discount").value=d.discount||"";
+  $("taxMode").value=d.taxMode||"tax10";
+  $("note").value=d.note||"";
+  $("items").innerHTML="";
+  (d.items&&d.items.length?d.items:[{qty:"1",unit:"式"}]).forEach(addItem);
+ }catch(e){
+  $("items").innerHTML="";
+  addItem({qty:"1",unit:"式"});
+ }
+}
 
-    if(!raw){
-      addItem({qty:"1",unit:"式"});
-      return;
-    }
+async function copyEstimate(){
+ const text=$("copyText").textContent;
+ try{await navigator.clipboard.writeText(text);showToast("コピーしました")}
+ catch(e){
+  const a=document.createElement("textarea");
+  a.value=text;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();
+  showToast("コピーしました");
+ }
+}
 
-    try{
-      const d = JSON.parse(raw);
+function makeSafeFileName(){
+ const items=readItems();
+ const firstWorkName=items.length ? items[0].name : "";
+ const siteName=$("site").value.trim();
+ const baseName=firstWorkName || siteName || "見積書";
+ const safeName=baseName.replace(/[\\/:*?"<>|]/g,"_").replace(/\s+/g," ").trim();
+ return `${safeName}_見積書.pdf`;
+}
 
-      $("title").value = d.title || "簡易見積書";
-      $("customer").value = d.customer || "";
-      $("site").value = d.site || "";
-      $("date").value = d.date || today();
-      $("companySelect").value = d.companySelect || "白髪外装";
-      $("expense").value = d.expense || "";
-      $("discount").value = d.discount || "";
-      $("taxMode").value = d.taxMode || "tax10";
-      $("note").value = d.note || "";
-      $("items").innerHTML = "";
+async function makePDFFile(){
+ const sheet=$("preview");
+ const canvas=await html2canvas(sheet,{scale:2,useCORS:true,backgroundColor:"#ffffff"});
+ const imgData=canvas.toDataURL("image/jpeg",1.0);
+ const {jsPDF}=window.jspdf;
+ const pdf=new jsPDF("p","mm","a4");
 
-      const arr = d.items && d.items.length
-        ? d.items
-        : [{qty:"1",unit:"式"}];
+ const margin=8;
+ const pdfWidth=210-(margin*2);
+ const pageHeight=297-(margin*2);
+ const imgWidth=pdfWidth;
+ const imgHeight=canvas.height*imgWidth/canvas.width;
 
-      arr.forEach(addItem);
-    }catch(e){
-      $("items").innerHTML = "";
-      addItem({qty:"1",unit:"式"});
-    }
-  }
+ let heightLeft=imgHeight;
+ let position=margin;
 
-  async function copyEstimate(){
-    const text = $("copyText").textContent;
+ pdf.setProperties({title: makeSafeFileName().replace(/\.pdf$/,"")});
+ pdf.addImage(imgData,"JPEG",margin,position,imgWidth,imgHeight);
+ heightLeft-=pageHeight;
 
-    try{
-      await navigator.clipboard.writeText(text);
-      showToast("コピーしました");
-    }catch(e){
-      const a = document.createElement("textarea");
-      a.value = text;
-      document.body.appendChild(a);
-      a.select();
-      document.execCommand("copy");
-      a.remove();
-      showToast("コピーしました");
-    }
-  }
+ while(heightLeft>0){
+  position=heightLeft-imgHeight+margin;
+  pdf.addPage();
+  pdf.addImage(imgData,"JPEG",margin,position,imgWidth,imgHeight);
+  heightLeft-=pageHeight;
+ }
 
-  async function shareEstimate(){
-    const text = $("copyText").textContent;
-    const title = $("title").value.trim() || "簡易見積書";
+ const blob=pdf.output("blob");
+ const fileName=makeSafeFileName();
+ const file=new File([blob],fileName,{type:"application/pdf"});
+ return{pdf,file,fileName};
+}
 
-    if(navigator.share){
-      try{
-        await navigator.share({title, text});
-        showToast("共有しました");
-      }catch(e){
-        showToast("共有をキャンセルしました");
-      }
-    }else{
-      await copyEstimate();
-      showToast("コピーしました。貼り付けて送信してください");
-    }
-  }
+async function savePDF(){
+ try{
+  showToast("PDF作成中...");
+  const {pdf,fileName}=await makePDFFile();
+  pdf.save(fileName);
+  showToast("PDF保存しました");
+ }catch(e){
+  showToast("PDF作成に失敗しました");
+ }
+}
 
-  function shareLine(){
-    const text = $("copyText").textContent;
-    const url = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
-    window.location.href = url;
-  }
+async function sharePDF(){
+ try{
+  showToast("PDF作成中...");
+  const {pdf,file,fileName}=await makePDFFile();
 
-  function sendMail(){
-    const text = $("copyText").textContent;
-    const title = $("title").value.trim() || "簡易見積書";
-    const customer = $("customer").value.trim();
-    const subject = customer ? `${title} ${customer}` : title;
-
-    window.location.href =
-      `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
-  }
-
-  function clearForm(){
-    if(!confirm("入力内容をリセットしますか？")) return;
-
-    localStorage.removeItem("spotEstimateDraftV4");
-    localStorage.removeItem("spotEstimateDraftV3");
-    localStorage.removeItem("spotEstimateDraftV2");
-
-    $("title").value = "簡易見積書";
-    $("customer").value = "";
-    $("site").value = "";
-    $("date").value = today();
-    $("companySelect").value = "白髪外装";
-    $("expense").value = "";
-    $("discount").value = "";
-    $("taxMode").value = "tax10";
-    $("note").value = "";
-    $("items").innerHTML = "";
-
-    addItem({qty:"1",unit:"式"});
-    render();
-  }
-
-  function init(){
-    $("date").value = today();
-
-    [
-      "title",
-      "customer",
-      "site",
-      "date",
-      "companySelect",
-      "expense",
-      "discount",
-      "taxMode",
-      "note"
-    ].forEach(id => {
-      $(id).addEventListener("input", render);
-      $(id).addEventListener("change", render);
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+   try{
+    await navigator.share({
+     files:[file],
+     title:fileName.replace(/\.pdf$/,""),
+     text:"見積書を送付します。"
     });
-
-    $("addItemBtn").addEventListener("click", () => addItem({qty:"1",unit:"式"}));
-    $("presetBtn").addEventListener("click", addPreset);
-    $("copyBtn").addEventListener("click", copyEstimate);
-    $("pdfBtn").addEventListener("click", () => window.print());
-    $("shareBtn").addEventListener("click", shareEstimate);
-    $("lineBtn").addEventListener("click", shareLine);
-    $("mailBtn").addEventListener("click", sendMail);
-    $("clearBtn").addEventListener("click", clearForm);
-
-    loadDraft();
-    render();
+    showToast("PDF共有しました");
+   }catch(e){
+    showToast("共有をキャンセルしました");
+   }
+  }else{
+   pdf.save(fileName);
+   await copyEstimate();
+   showToast("PDF保存＋文面コピーしました");
   }
+ }catch(e){
+  showToast("PDF共有に失敗しました");
+ }
+}
 
-  document.addEventListener("DOMContentLoaded", init);
+function clearForm(){
+ if(!confirm("入力内容をリセットしますか？"))return;
+ ["spotEstimateDraftV6","spotEstimateDraftV5","spotEstimateDraftV4","spotEstimateDraftV3","spotEstimateDraftV2"].forEach(k=>localStorage.removeItem(k));
+ $("title").value="簡易見積書";$("customer").value="";$("site").value="";$("date").value=today();
+ $("companySelect").value="白髪外装";$("expense").value="";$("discount").value="";$("taxMode").value="tax10";$("note").value="";
+ $("items").innerHTML="";
+ addItem({qty:"1",unit:"式"});
+ render();
+}
+
+function init(){
+ $("date").value=today();
+ ["title","customer","site","date","companySelect","expense","discount","taxMode","note"].forEach(id=>{
+  $(id).addEventListener("input",render);
+  $(id).addEventListener("change",render);
+ });
+
+ $("addItemBtn").addEventListener("click",()=>addItem({qty:"1",unit:"式"}));
+ $("presetBtn").addEventListener("click",addPreset);
+ $("copyBtn").addEventListener("click",copyEstimate);
+
+ $("pdfBtn").addEventListener("click",savePDF);
+ $("shareBtn").addEventListener("click",sharePDF);
+ $("lineBtn").addEventListener("click",sharePDF);
+ $("mailBtn").addEventListener("click",sharePDF);
+
+ $("clearBtn").addEventListener("click",clearForm);
+
+ loadDraft();
+ render();
+}
+
+document.addEventListener("DOMContentLoaded",init);
 })();
 </script>
 </body>
