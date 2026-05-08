@@ -739,12 +739,21 @@
       }[c]));
     }
 
-    document.querySelectorAll("input, textarea, select").forEach(el => {
-      el.addEventListener("input", render);
-      el.addEventListener("change", render);
-    });
+    window.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll("input, textarea, select").forEach(el => {
+        el.addEventListener("input", render);
+        el.addEventListener("change", render);
+      });
 
-    restoreDraft();
+      try {
+        restoreDraft();
+      } catch (e) {
+        console.error(e);
+        document.getElementById("items").innerHTML = "";
+        addItem();
+        render();
+      }
+    });
   </script>
 </body>
 </html>
