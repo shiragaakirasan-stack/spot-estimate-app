@@ -1,48 +1,499 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>簡易見積書</title>
   <style>
     :root{
-      --bg:#f4f6f8;--card:#fff;--main:#1f2937;--sub:#6b7280;--line:#d8dee8;--accent:#2563eb;--dark:#111827;--danger:#dc2626;--ok:#16a34a;
+      --bg:#f4f6f8;
+      --card:#fff;
+      --main:#1f2937;
+      --sub:#6b7280;
+      --line:#d8dee8;
+      --accent:#2563eb;
+      --dark:#111827;
+      --danger:#dc2626;
+      --ok:#16a34a;
+      --navy:#1e293b;
+      --navy2:#334155;
     }
+
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--main);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}
-    .app{max-width:680px;margin:0 auto;padding:14px 14px 110px}
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--main);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      line-height:1.6;
+    }
+
+    .app{
+      max-width:760px;
+      margin:0 auto;
+      padding:14px 14px 130px;
+    }
+
     header{padding:10px 2px 16px}
-    h1{margin:0;font-size:24px;letter-spacing:.04em}
-    .lead{margin:4px 0 0;color:var(--sub);font-size:13px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 8px 22px rgba(15,23,42,.06);margin-bottom:14px}
-    label{display:block;font-weight:800;font-size:13px;margin:12px 0 6px}
-    input,textarea,select{width:100%;border:1px solid #cfd6df;border-radius:12px;padding:12px;font-size:16px;background:#fff;color:var(--main);outline:none}
-    textarea{min-height:78px;resize:vertical}
-    input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-    .item{border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px;background:#fafafa}
-    .item-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px}
-    .item-title{font-weight:900;font-size:13px;color:var(--sub)}
-    button{border:0;border-radius:999px;padding:12px 14px;font-weight:900;font-size:14px;cursor:pointer;color:#fff;background:var(--accent);touch-action:manipulation}
+
+    h1{
+      margin:0;
+      font-size:24px;
+      letter-spacing:.04em;
+    }
+
+    .lead{
+      margin:4px 0 0;
+      color:var(--sub);
+      font-size:13px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      box-shadow:0 8px 22px rgba(15,23,42,.06);
+      margin-bottom:14px;
+    }
+
+    label{
+      display:block;
+      font-weight:800;
+      font-size:13px;
+      margin:12px 0 6px;
+    }
+
+    input,textarea,select{
+      width:100%;
+      border:1px solid #cfd6df;
+      border-radius:12px;
+      padding:12px;
+      font-size:16px;
+      background:#fff;
+      color:var(--main);
+      outline:none;
+    }
+
+    textarea{
+      min-height:78px;
+      resize:vertical;
+    }
+
+    input:focus,textarea:focus,select:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(37,99,235,.12);
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .row3{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:8px;
+    }
+
+    .item{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      margin-top:10px;
+      background:#fafafa;
+    }
+
+    .item-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:4px;
+    }
+
+    .item-title{
+      font-weight:900;
+      font-size:13px;
+      color:var(--sub);
+    }
+
+    button{
+      border:0;
+      border-radius:999px;
+      padding:12px 14px;
+      font-weight:900;
+      font-size:14px;
+      cursor:pointer;
+      color:#fff;
+      background:var(--accent);
+      touch-action:manipulation;
+    }
+
     button:active{transform:translateY(1px)}
-    .btn-sub{background:#4b5563}.btn-danger{background:var(--danger);padding:8px 10px;font-size:12px}.btn-ok{background:var(--ok)}.btn-light{background:#e5e7eb;color:var(--main)}
-    .mini-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-    .actions{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:10px 12px max(10px,env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;max-width:680px;margin:0 auto;z-index:20}
-    .total-box{background:var(--dark);color:#fff;border-radius:18px;padding:14px;margin-top:12px}
-    .total-line{display:flex;justify-content:space-between;gap:12px;font-size:14px}.total-line.big{font-size:22px;font-weight:950;border-top:1px solid rgba(255,255,255,.25);margin-top:8px;padding-top:8px}
-    .preview-label{font-weight:950;margin-bottom:8px}
-    .estimate-sheet{background:#fff;color:#475569;border:0;border-radius:0;overflow:hidden;font-family:"MS PGothic","Yu Gothic","Hiragino Kaku Gothic ProN",sans-serif;padding:28px 24px 18px;box-shadow:none;max-width:794px;margin:0 auto}
-    .sheet-top{background:#fff!important;color:#475569;padding:0 0 12px;border-bottom:0}.sheet-title{text-align:center;font-size:24px;font-weight:400;letter-spacing:.65em;color:#64748b;border-top:0;border-bottom:2px solid #94a3b8;padding:8px 0 8px;width:56%;margin:0 auto}.sheet-subtitle{display:none}
-    .sheet-body{padding:14px 0 0}.customer-name{font-size:17px;font-weight:400;border-bottom:1px solid #94a3b8;padding-bottom:8px;margin-bottom:10px;color:#334155}.box{border:0;border-bottom:1px solid #7f9dbd;border-radius:0;padding:6px 4px;font-size:12px;background:#fff;margin-bottom:8px}.label-small{display:block;color:#6b7280;font-size:11px;font-weight:900;margin-bottom:2px}
-    .grand-total{border-top:1px solid #7f9dbd;border-bottom:1px solid #7f9dbd;border-left:0;border-right:0;border-radius:0;padding:8px 4px;margin:14px 0 12px;background:#fff;display:grid;grid-template-columns:120px 1fr;align-items:center}.grand-total .cap{font-size:12px;font-weight:700;color:#475569;letter-spacing:.08em}.grand-total .amount{text-align:left;font-size:24px;font-weight:700;line-height:1.2;color:#334155;letter-spacing:.03em}
-    .table-wrap{width:100%;overflow-x:auto;border:1px solid #94a3b8;border-radius:0}.estimate-table{width:100%;min-width:650px;border-collapse:collapse;font-size:11px}.estimate-table th{background:#dbe4f0;color:#475569;border:1px solid #94a3b8;padding:6px 4px;text-align:center;font-size:10px;white-space:nowrap;font-weight:700}.estimate-table td{border:1px solid #cbd5e1;padding:6px 4px;vertical-align:top;background:#fff;height:28px}.no{width:34px;text-align:center}.content{min-width:140px}.detail{min-width:190px;color:#4b5563;white-space:pre-wrap}.qty{width:58px;text-align:right;white-space:nowrap}.unit{width:48px;text-align:center;white-space:nowrap}.price{width:86px;text-align:right;white-space:nowrap;font-weight:800}
-    .summary-table{width:52%;margin-left:auto;border-collapse:collapse;margin-top:10px;font-size:11px}.summary-table td{padding:7px 8px;border-bottom:1px solid #cbd5e1}.summary-table td:last-child{text-align:right;font-weight:700}
-    .note-box,.company-box{margin-top:14px;border:1px solid #cbd5e1;border-radius:0;padding:8px;font-size:11px;white-space:pre-wrap;min-height:70px;background:#fff}.company-box{text-align:right;border:0;padding-right:2px;color:#475569;line-height:1.9;font-size:11px}
-    .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 14px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:30}.toast.show{opacity:1;bottom:106px}.copy-text{position:absolute;left:-9999px;top:-9999px;white-space:pre-wrap}.hide-print{display:block}
-    @media print{ @page{margin:10mm} body{background:#fff} header,.input-area,.actions,.mini-actions,.hide-print,.toast{display:none!important}.app{max-width:none;padding:0}.card{border:0;box-shadow:none;padding:0;margin:0}.estimate-sheet{border-radius:0;border:0;padding:18mm 14mm 10mm;max-width:none}.sheet-top{background:#fff!important;color:#475569!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}.sheet-title{border-top:0!important;border-bottom:2px solid #7f9dbd!important;color:#64748b!important}.table-wrap{overflow:visible;border-radius:0}.estimate-table{min-width:0;font-size:10.5px}.estimate-table td{height:24px;padding:4px}.summary-table{font-size:10.5px}.note-box{min-height:55px} }
+
+    .btn-sub{background:#4b5563}
+    .btn-danger{background:var(--danger);padding:8px 10px;font-size:12px}
+    .btn-ok{background:var(--ok)}
+    .btn-light{background:#e5e7eb;color:var(--main)}
+
+    .mini-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      margin-top:12px;
+    }
+
+    .actions{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      background:rgba(255,255,255,.96);
+      backdrop-filter:blur(12px);
+      border-top:1px solid var(--line);
+      padding:10px 12px max(10px,env(safe-area-inset-bottom));
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:8px;
+      max-width:760px;
+      margin:0 auto;
+      z-index:20;
+    }
+
+    .total-box{
+      background:var(--dark);
+      color:#fff;
+      border-radius:18px;
+      padding:14px;
+      margin-top:12px;
+    }
+
+    .total-line{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      font-size:14px;
+    }
+
+    .total-line.big{
+      font-size:22px;
+      font-weight:950;
+      border-top:1px solid rgba(255,255,255,.25);
+      margin-top:8px;
+      padding-top:8px;
+    }
+
+    .preview-label{
+      font-weight:950;
+      margin-bottom:8px;
+    }
+
+    .estimate-sheet{
+      background:#fff;
+      color:#1f2937;
+      border:0;
+      border-radius:0;
+      overflow:hidden;
+      font-family:"Yu Gothic","Meiryo","MS PGothic",sans-serif;
+      padding:28px 24px 22px;
+      box-shadow:none;
+      max-width:794px;
+      margin:0 auto;
+    }
+
+    .sheet-top{
+      background:#1e293b!important;
+      color:#fff;
+      padding:18px 24px;
+      margin:-28px -24px 20px;
+    }
+
+    .sheet-title{
+      text-align:center;
+      font-size:32px;
+      font-weight:800;
+      letter-spacing:.42em;
+      color:#fff;
+      border:none;
+      width:100%;
+      margin:0;
+    }
+
+    .sheet-body{
+      padding:0;
+    }
+
+    .top-grid{
+      display:grid;
+      grid-template-columns:1fr 245px;
+      gap:20px;
+      align-items:start;
+      margin-bottom:14px;
+    }
+
+    .customer-name{
+      font-size:20px;
+      font-weight:800;
+      border-bottom:2px solid #334155;
+      padding-bottom:10px;
+      margin-bottom:12px;
+      color:#0f172a;
+    }
+
+    .message{
+      font-size:12px;
+      color:#475569;
+    }
+
+    .box{
+      border:1px solid #cbd5e1;
+      border-radius:0;
+      padding:8px 10px;
+      font-size:12px;
+      background:#fff;
+      margin-bottom:8px;
+    }
+
+    .label-small{
+      display:block;
+      color:#475569;
+      font-size:11px;
+      font-weight:900;
+      margin-bottom:3px;
+    }
+
+    .company-box{
+      text-align:right;
+      border:0;
+      padding:2px 0 0;
+      color:#334155;
+      line-height:1.8;
+      font-size:11px;
+      white-space:pre-wrap;
+    }
+
+    .grand-total{
+      border:3px solid #0f172a;
+      padding:14px;
+      margin:18px 0 18px;
+      background:#f8fafc;
+      display:grid;
+      grid-template-columns:160px 1fr;
+      align-items:center;
+    }
+
+    .grand-total .cap{
+      font-size:15px;
+      font-weight:800;
+      color:#334155;
+      letter-spacing:.08em;
+    }
+
+    .grand-total .amount{
+      text-align:right;
+      font-size:36px;
+      font-weight:950;
+      line-height:1.2;
+      color:#111827;
+      letter-spacing:.03em;
+    }
+
+    .table-wrap{
+      width:100%;
+      overflow-x:auto;
+      border:2px solid #334155;
+      border-radius:0;
+    }
+
+    .estimate-table{
+      width:100%;
+      min-width:720px;
+      border-collapse:collapse;
+      font-size:11px;
+    }
+
+    .estimate-table th{
+      background:#334155;
+      color:#fff;
+      border:1px solid #475569;
+      padding:9px 5px;
+      text-align:center;
+      font-size:11px;
+      white-space:nowrap;
+      font-weight:800;
+    }
+
+    .estimate-table td{
+      border:1px solid #94a3b8;
+      padding:8px 5px;
+      vertical-align:top;
+      background:#fff;
+      height:30px;
+    }
+
+    .no{width:36px;text-align:center}
+    .content{min-width:150px}
+    .detail{min-width:220px;color:#374151;white-space:pre-wrap}
+    .qty{width:62px;text-align:right;white-space:nowrap}
+    .unit{width:50px;text-align:center;white-space:nowrap}
+    .price{width:92px;text-align:right;white-space:nowrap;font-weight:800}
+
+    .summary-table{
+      width:330px;
+      margin-left:auto;
+      border-collapse:collapse;
+      margin-top:18px;
+      font-size:12px;
+      border:2px solid #334155;
+    }
+
+    .summary-table td{
+      padding:9px 10px;
+      border-bottom:1px solid #cbd5e1;
+    }
+
+    .summary-table td:last-child{
+      text-align:right;
+      font-weight:800;
+    }
+
+    .summary-table tr:last-child td{
+      background:#334155;
+      color:#fff;
+      font-size:15px;
+      font-weight:900;
+      border-bottom:0;
+    }
+
+    .note-box{
+      margin-top:18px;
+      border:2px solid #cbd5e1;
+      border-radius:0;
+      padding:12px;
+      font-size:11px;
+      white-space:pre-wrap;
+      min-height:80px;
+      background:#fff;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:92px;
+      transform:translateX(-50%);
+      background:#111827;
+      color:#fff;
+      padding:10px 14px;
+      border-radius:999px;
+      font-size:13px;
+      opacity:0;
+      pointer-events:none;
+      transition:.2s;
+      z-index:30;
+    }
+
+    .toast.show{
+      opacity:1;
+      bottom:106px;
+    }
+
+    .copy-text{
+      position:absolute;
+      left:-9999px;
+      top:-9999px;
+      white-space:pre-wrap;
+    }
+
+    .hide-print{display:block}
+
+    @media print{
+      @page{margin:10mm}
+
+      body{
+        background:#fff;
+      }
+
+      header,
+      .input-area,
+      .actions,
+      .mini-actions,
+      .hide-print,
+      .toast{
+        display:none!important;
+      }
+
+      .app{
+        max-width:none;
+        padding:0;
+      }
+
+      .card{
+        border:0;
+        box-shadow:none;
+        padding:0;
+        margin:0;
+      }
+
+      .estimate-sheet{
+        border-radius:0;
+        border:0;
+        padding:18mm 12mm 10mm;
+        max-width:none;
+      }
+
+      .sheet-top{
+        background:#1e293b!important;
+        color:#fff!important;
+        print-color-adjust:exact;
+        -webkit-print-color-adjust:exact;
+        margin:-18mm -12mm 12mm;
+      }
+
+      .sheet-title{
+        color:#fff!important;
+      }
+
+      .grand-total{
+        print-color-adjust:exact;
+        -webkit-print-color-adjust:exact;
+      }
+
+      .estimate-table th,
+      .summary-table tr:last-child td{
+        background:#334155!important;
+        color:#fff!important;
+        print-color-adjust:exact;
+        -webkit-print-color-adjust:exact;
+      }
+
+      .table-wrap{
+        overflow:visible;
+      }
+
+      .estimate-table{
+        min-width:0;
+        font-size:10.2px;
+      }
+
+      .estimate-table td{
+        height:25px;
+        padding:5px;
+      }
+
+      .summary-table{
+        font-size:10.8px;
+      }
+
+      .note-box{
+        min-height:55px;
+      }
+    }
   </style>
 </head>
+
 <body>
   <div class="app">
     <header>
@@ -52,16 +503,16 @@
 
     <section class="card input-area">
       <label for="title">タイトル</label>
-      <input id="title" value="簡易見積書">
+      <input id="title" value="簡易見積書" />
 
       <label for="customer">宛名</label>
-      <input id="customer" placeholder="例：〇〇 様">
+      <input id="customer" placeholder="例：〇〇 様" />
 
       <label for="site">現場名</label>
-      <input id="site" placeholder="例：〇〇マンション">
+      <input id="site" placeholder="例：〇〇マンション" />
 
       <label for="date">発行日</label>
-      <input id="date" type="date">
+      <input id="date" type="date" />
 
       <label for="companySelect">自社名</label>
       <select id="companySelect">
@@ -71,6 +522,7 @@
 
       <label>工事明細</label>
       <div id="items"></div>
+
       <div class="mini-actions">
         <button type="button" id="addItemBtn" class="btn-sub">＋ 行追加</button>
         <button type="button" id="presetBtn" class="btn-light">よく使う工事</button>
@@ -79,11 +531,11 @@
       <div class="row">
         <div>
           <label for="expense">諸経費</label>
-          <input id="expense" type="number" inputmode="numeric" placeholder="0">
+          <input id="expense" type="number" inputmode="numeric" placeholder="0" />
         </div>
         <div>
           <label for="discount">値引き</label>
-          <input id="discount" type="number" inputmode="numeric" placeholder="0">
+          <input id="discount" type="number" inputmode="numeric" placeholder="0" />
         </div>
       </div>
 
@@ -124,7 +576,19 @@
 
 <script>
 (function(){
-  const presets = ["雨漏り調査","高圧洗浄作業","シーリング補修","外壁タッチアップ","鉄部タッチアップ","コーキング打替え","ひび割れ補修","タイル補修","清掃作業","現地確認費"];
+  const presets = [
+    "雨漏り調査",
+    "高圧洗浄作業",
+    "シーリング補修",
+    "外壁タッチアップ",
+    "鉄部タッチアップ",
+    "コーキング打替え",
+    "ひび割れ補修",
+    "タイル補修",
+    "清掃作業",
+    "現地確認費"
+  ];
+
   const companyInfo = {
     "白髪外装": {
       name: "白髪外装",
@@ -141,8 +605,20 @@
   };
 
   const $ = (id) => document.getElementById(id);
-  const yen = (n) => "￥" + Math.round(Number(n || 0)).toLocaleString("ja-JP");
-  const esc = (s) => String(s || "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+
+  const yen = (n) => {
+    const num = Math.round(Number(n || 0));
+    return "￥" + num.toLocaleString("ja-JP");
+  };
+
+  const esc = (s) => String(s || "").replace(/[&<>'"]/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    "'":"&#39;",
+    '"':"&quot;"
+  }[c]));
+
   const today = () => new Date().toISOString().slice(0,10);
 
   function showToast(msg){
@@ -155,15 +631,19 @@
   function addItem(data = {}){
     const wrap = document.createElement("div");
     wrap.className = "item";
+
     wrap.innerHTML = `
       <div class="item-head">
         <div class="item-title">工事明細</div>
         <button type="button" class="btn-danger remove-btn">削除</button>
       </div>
+
       <label>工事名</label>
       <input class="work-name" placeholder="例：シーリング補修" value="${esc(data.name)}">
+
       <label>工事詳細</label>
       <textarea class="work-detail" placeholder="例：サッシ廻り シール撤去打替え">${esc(data.detail)}</textarea>
+
       <div class="row3">
         <div>
           <label>数量</label>
@@ -179,14 +659,21 @@
         </div>
       </div>
     `;
+
     $("items").appendChild(wrap);
-    wrap.querySelectorAll("input,textarea").forEach(el => el.addEventListener("input", render));
+
+    wrap.querySelectorAll("input,textarea").forEach(el => {
+      el.addEventListener("input", render);
+    });
+
     wrap.querySelector(".remove-btn").addEventListener("click", () => removeItem(wrap));
+
     render();
   }
 
   function removeItem(row){
     const all = document.querySelectorAll(".item");
+
     if(all.length <= 1){
       row.querySelector(".work-name").value = "";
       row.querySelector(".work-detail").value = "";
@@ -196,6 +683,7 @@
     }else{
       row.remove();
     }
+
     render();
   }
 
@@ -203,7 +691,16 @@
     const list = presets.map((p,i)=>`${i+1}. ${p}`).join("\n");
     const pick = prompt("追加する工事番号を入力してください\n\n" + list);
     const idx = Number(pick) - 1;
-    if(presets[idx]) addItem({name:presets[idx], detail:"", qty:"1", unit:"式", price:""});
+
+    if(presets[idx]){
+      addItem({
+        name:presets[idx],
+        detail:"",
+        qty:"1",
+        unit:"式",
+        price:""
+      });
+    }
   }
 
   function readItems(){
@@ -211,10 +708,12 @@
       const qtyRaw = row.querySelector(".work-qty").value.trim();
       const qty = Number(qtyRaw || 1) || 1;
       const price = Number(row.querySelector(".work-price").value || 0);
+
       return {
         name: row.querySelector(".work-name").value.trim(),
         detail: row.querySelector(".work-detail").value.trim(),
-        qtyRaw, qty,
+        qtyRaw,
+        qty,
         unit: row.querySelector(".work-unit").value.trim() || "式",
         price,
         amount: qty * price
@@ -227,11 +726,22 @@
     const expense = Number($("expense").value || 0);
     const discount = Number($("discount").value || 0);
     const taxMode = $("taxMode").value;
+
     const sub = items.reduce((s,x)=>s + x.amount, 0);
     const base = sub + expense - discount;
     const tax = taxMode === "tax10" ? Math.floor(base * 0.1) : 0;
     const total = taxMode === "tax10" ? base + tax : base;
-    return {items, expense, discount, taxMode, sub, base, tax, total};
+
+    return {
+      items,
+      expense,
+      discount,
+      taxMode,
+      sub,
+      base,
+      tax,
+      total
+    };
   }
 
   function render(){
@@ -242,120 +752,323 @@
     const note = $("note").value.trim() || "作業内容・日程は別途ご相談となります。";
     const company = companyInfo[$("companySelect").value] || companyInfo["白髪外装"];
     const v = getCalc();
-    const taxLabel = v.taxMode === "tax10" ? yen(v.tax) : v.taxMode === "included" ? "税込" : "なし";
+
+    const taxLabel = v.taxMode === "tax10"
+      ? yen(v.tax)
+      : v.taxMode === "included"
+        ? "税込"
+        : "なし";
 
     $("subTotalText").textContent = yen(v.base);
     $("taxText").textContent = taxLabel;
     $("totalText").textContent = yen(v.total);
 
-    const rows = v.items.length ? v.items.map((item,i)=>`
+    const rows = v.items.length
+      ? v.items.map((item,i)=>`
+        <tr>
+          <td class="no">${i+1}</td>
+          <td class="content">${esc(item.name || "工事一式")}</td>
+          <td class="detail">${esc(item.detail || "")}</td>
+          <td class="qty">${esc(item.qtyRaw || "1")}</td>
+          <td class="unit">${esc(item.unit || "式")}</td>
+          <td class="price">${yen(item.price)}</td>
+          <td class="price">${yen(item.amount)}</td>
+        </tr>
+      `).join("")
+      : `
+        <tr>
+          <td class="no">1</td>
+          <td class="content">工事内容未入力</td>
+          <td class="detail"></td>
+          <td class="qty">1</td>
+          <td class="unit">式</td>
+          <td class="price">￥0</td>
+          <td class="price">￥0</td>
+        </tr>
+      `;
+
+    const blankRows = Array.from({length:8}).map(()=>`
       <tr>
-        <td class="no">${i+1}</td>
-        <td class="content">${esc(item.name || "工事一式")}</td>
-        <td class="detail">${esc(item.detail || "")}</td>
-        <td class="qty">${esc(item.qtyRaw || "1")}</td>
-        <td class="unit">${esc(item.unit || "式")}</td>
-        <td class="price">${yen(item.price)}</td>
-        <td class="price">${yen(item.amount)}</td>
-      </tr>`).join("") : `<tr><td class="no">1</td><td class="content">工事内容未入力</td><td class="detail"></td><td class="qty">1</td><td class="unit">式</td><td class="price">￥0</td><td class="price">￥0</td></tr>`;
+        <td class="no">&nbsp;</td>
+        <td class="content"></td>
+        <td class="detail"></td>
+        <td class="qty"></td>
+        <td class="unit"></td>
+        <td class="price"></td>
+        <td class="price"></td>
+      </tr>
+    `).join("");
 
     $("preview").innerHTML = `
-      <div class="sheet-top"><div class="sheet-title">御 見 積 書</div></div>
+      <div class="sheet-top">
+        <div class="sheet-title">御 見 積 書</div>
+      </div>
+
       <div class="sheet-body">
-        <div style="display:grid;grid-template-columns:1fr 220px;gap:18px;align-items:start;margin-bottom:12px;">
-<div>
-<div class="customer-name">${esc(customer)}</div>
-<div style="font-size:12px;color:#64748b;">下記の通り御見積申し上げます。</div>
-</div>
-<div>
-<div class="box"><span class="label-small">発行日</span>${esc(date)}</div>
-<div class="company-box">${esc(company.name)}<br>${esc(company.address)}<br>${esc(company.tel)}<br>${esc(company.person)}</div>
-</div>
-</div>
-<div class="box"><span class="label-small">現場名</span>${esc(site)}</div>
-        <div class="grand-total"><div class="cap">御見積金額</div><div class="amount">${yen(v.total)}-</div></div>
+        <div class="top-grid">
+          <div>
+            <div class="customer-name">${esc(customer)}</div>
+            <div class="message">下記の通り御見積申し上げます。</div>
+          </div>
+
+          <div>
+            <div class="box">
+              <span class="label-small">発行日</span>
+              ${esc(date)}
+            </div>
+
+            <div class="company-box">${esc(company.name)}<br>${esc(company.address)}<br>${esc(company.tel)}<br>${esc(company.person)}</div>
+          </div>
+        </div>
+
+        <div class="box">
+          <span class="label-small">現場名</span>
+          ${esc(site)}
+        </div>
+
+        <div class="grand-total">
+          <div class="cap">御見積金額</div>
+          <div class="amount">${yen(v.total)}-</div>
+        </div>
+
         <div class="table-wrap">
           <table class="estimate-table">
-            <thead><tr><th>No.</th><th>工事名</th><th>工事詳細</th><th>数量</th><th>単位</th><th>単価</th><th>金額</th></tr></thead>
-            <tbody>${rows}${Array.from({length:10}).map(()=>'<tr><td class="no">&nbsp;</td><td class="content"></td><td class="detail"></td><td class="qty"></td><td class="unit"></td><td class="price"></td><td class="price"></td></tr>').join('')}</tbody>
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>工事名</th>
+                <th>工事詳細</th>
+                <th>数量</th>
+                <th>単位</th>
+                <th>単価</th>
+                <th>金額</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+              ${blankRows}
+            </tbody>
           </table>
         </div>
-        <table class="summary-table">
-          <tr><td>工事小計</td><td>${yen(v.sub)}</td></tr>
-          ${v.expense ? `<tr><td>諸経費</td><td>${yen(v.expense)}</td></tr>` : ""}
-          ${v.discount ? `<tr><td>値引き</td><td>-${yen(v.discount)}</td></tr>` : ""}
-          <tr><td>消費税</td><td>${taxLabel}</td></tr>
-          <tr><td><strong>合計</strong></td><td><strong>${yen(v.total)}</strong></td></tr>
-        </table>
-        <div class="note-box"><span class="label-small">備考</span>${esc(note)}</div>
-      </div>`;
 
-    const detailText = v.items.length ? v.items.map((item,i)=>`${i+1}. ${item.name || "工事一式"}\n工事詳細：${item.detail || "-"}\n数量：${item.qtyRaw || "1"}${item.unit || "式"}\n単価：${yen(item.price)}\n金額：${yen(item.amount)}`).join("\n\n") : "1. 工事内容未入力\n数量：1式\n単価：￥0\n金額：￥0";
-    $("copyText").textContent = `${title}\n\n${customer}\n\n現場名：${site}\n発行日：${date}\n\n御見積金額：${yen(v.total)}\n\n【工事明細】\n${detailText}\n\n工事小計：${yen(v.sub)}${v.expense ? `\n諸経費：${yen(v.expense)}` : ""}${v.discount ? `\n値引き：-${yen(v.discount)}` : ""}\n消費税：${taxLabel}\n合計：${yen(v.total)}\n\n【備考】\n${note}\n\n${company.name}\n${company.address}\n${company.tel}\n${company.person}`;
+        <table class="summary-table">
+          <tr>
+            <td>工事小計</td>
+            <td>${yen(v.sub)}</td>
+          </tr>
+          ${v.expense ? `
+          <tr>
+            <td>諸経費</td>
+            <td>${yen(v.expense)}</td>
+          </tr>` : ""}
+          ${v.discount ? `
+          <tr>
+            <td>値引き</td>
+            <td>-${yen(v.discount)}</td>
+          </tr>` : ""}
+          <tr>
+            <td>消費税</td>
+            <td>${taxLabel}</td>
+          </tr>
+          <tr>
+            <td>合計</td>
+            <td>${yen(v.total)}</td>
+          </tr>
+        </table>
+
+        <div class="note-box">
+          <span class="label-small">備考</span>
+          ${esc(note)}
+        </div>
+      </div>
+    `;
+
+    const detailText = v.items.length
+      ? v.items.map((item,i)=>`${i+1}. ${item.name || "工事一式"}
+工事詳細：${item.detail || "-"}
+数量：${item.qtyRaw || "1"}${item.unit || "式"}
+単価：${yen(item.price)}
+金額：${yen(item.amount)}`).join("\n\n")
+      : "1. 工事内容未入力\n数量：1式\n単価：￥0\n金額：￥0";
+
+    $("copyText").textContent = `${title}
+
+${customer}
+
+現場名：${site}
+発行日：${date}
+
+御見積金額：${yen(v.total)}
+
+【工事明細】
+${detailText}
+
+工事小計：${yen(v.sub)}${v.expense ? `\n諸経費：${yen(v.expense)}` : ""}${v.discount ? `\n値引き：-${yen(v.discount)}` : ""}
+消費税：${taxLabel}
+合計：${yen(v.total)}
+
+【備考】
+${note}
+
+${company.name}
+${company.address}
+${company.tel}
+${company.person}`;
+
     saveDraft();
   }
 
   function draftData(){
     return {
-      title:$("title").value, customer:$("customer").value, site:$("site").value, date:$("date").value, companySelect:$("companySelect").value,
-      expense:$("expense").value, discount:$("discount").value, taxMode:$("taxMode").value, note:$("note").value,
+      title:$("title").value,
+      customer:$("customer").value,
+      site:$("site").value,
+      date:$("date").value,
+      companySelect:$("companySelect").value,
+      expense:$("expense").value,
+      discount:$("discount").value,
+      taxMode:$("taxMode").value,
+      note:$("note").value,
       items:[...document.querySelectorAll(".item")].map(row=>({
-        name:row.querySelector(".work-name").value, detail:row.querySelector(".work-detail").value, qty:row.querySelector(".work-qty").value,
-        unit:row.querySelector(".work-unit").value, price:row.querySelector(".work-price").value
+        name:row.querySelector(".work-name").value,
+        detail:row.querySelector(".work-detail").value,
+        qty:row.querySelector(".work-qty").value,
+        unit:row.querySelector(".work-unit").value,
+        price:row.querySelector(".work-price").value
       }))
     };
   }
-  function saveDraft(){ try{ localStorage.setItem("spotEstimateDraftV2", JSON.stringify(draftData())); }catch(e){} }
+
+  function saveDraft(){
+    try{
+      localStorage.setItem("spotEstimateDraftV3", JSON.stringify(draftData()));
+    }catch(e){}
+  }
+
   function loadDraft(){
-    const raw = localStorage.getItem("spotEstimateDraftV2");
-    if(!raw){ addItem({qty:"1",unit:"式"}); return; }
+    const raw = localStorage.getItem("spotEstimateDraftV3")
+      || localStorage.getItem("spotEstimateDraftV2");
+
+    if(!raw){
+      addItem({qty:"1",unit:"式"});
+      return;
+    }
+
     try{
       const d = JSON.parse(raw);
-      $("title").value = d.title || "簡易見積書"; $("customer").value = d.customer || ""; $("site").value = d.site || ""; $("date").value = d.date || today();
-      $("companySelect").value = d.companySelect || "白髪外装"; $("expense").value = d.expense || ""; $("discount").value = d.discount || ""; $("taxMode").value = d.taxMode || "tax10"; $("note").value = d.note || "";
+
+      $("title").value = d.title || "簡易見積書";
+      $("customer").value = d.customer || "";
+      $("site").value = d.site || "";
+      $("date").value = d.date || today();
+      $("companySelect").value = d.companySelect || "白髪外装";
+      $("expense").value = d.expense || "";
+      $("discount").value = d.discount || "";
+      $("taxMode").value = d.taxMode || "tax10";
+      $("note").value = d.note || "";
+
       $("items").innerHTML = "";
-      const arr = d.items && d.items.length ? d.items : [{qty:"1",unit:"式"}];
+
+      const arr = d.items && d.items.length
+        ? d.items
+        : [{qty:"1",unit:"式"}];
+
       arr.forEach(addItem);
-    }catch(e){ $("items").innerHTML = ""; addItem({qty:"1",unit:"式"}); }
+    }catch(e){
+      $("items").innerHTML = "";
+      addItem({qty:"1",unit:"式"});
+    }
   }
 
   async function copyEstimate(){
     const text = $("copyText").textContent;
-    try{ await navigator.clipboard.writeText(text); showToast("コピーしました"); }
-    catch(e){ const a=document.createElement("textarea"); a.value=text; document.body.appendChild(a); a.select(); document.execCommand("copy"); a.remove(); showToast("コピーしました"); }
+
+    try{
+      await navigator.clipboard.writeText(text);
+      showToast("コピーしました");
+    }catch(e){
+      const a = document.createElement("textarea");
+      a.value = text;
+      document.body.appendChild(a);
+      a.select();
+      document.execCommand("copy");
+      a.remove();
+      showToast("コピーしました");
+    }
   }
+
   async function shareEstimate(){
     const text = $("copyText").textContent;
     const title = $("title").value.trim() || "簡易見積書";
+
     if(navigator.share){
-      try{ await navigator.share({title, text}); showToast("共有しました"); }
-      catch(e){ showToast("共有をキャンセルしました"); }
-    }else{ await copyEstimate(); showToast("コピーしました。貼り付けて送信してください"); }
+      try{
+        await navigator.share({title, text});
+        showToast("共有しました");
+      }catch(e){
+        showToast("共有をキャンセルしました");
+      }
+    }else{
+      await copyEstimate();
+      showToast("コピーしました。貼り付けて送信してください");
+    }
   }
+
   function shareLine(){
     const text = $("copyText").textContent;
     const url = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
     window.location.href = url;
   }
+
   function sendMail(){
     const text = $("copyText").textContent;
     const title = $("title").value.trim() || "簡易見積書";
     const customer = $("customer").value.trim();
     const subject = customer ? `${title} ${customer}` : title;
-    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
+
+    window.location.href =
+      `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
   }
+
   function clearForm(){
     if(!confirm("入力内容をリセットしますか？")) return;
+
+    localStorage.removeItem("spotEstimateDraftV3");
     localStorage.removeItem("spotEstimateDraftV2");
-    $("title").value = "簡易見積書"; $("customer").value = ""; $("site").value = ""; $("date").value = today(); $("companySelect").value = "白髪外装";
-    $("expense").value = ""; $("discount").value = ""; $("taxMode").value = "tax10"; $("note").value = ""; $("items").innerHTML = "";
-    addItem({qty:"1",unit:"式"}); render();
+
+    $("title").value = "簡易見積書";
+    $("customer").value = "";
+    $("site").value = "";
+    $("date").value = today();
+    $("companySelect").value = "白髪外装";
+    $("expense").value = "";
+    $("discount").value = "";
+    $("taxMode").value = "tax10";
+    $("note").value = "";
+    $("items").innerHTML = "";
+
+    addItem({qty:"1",unit:"式"});
+    render();
   }
 
   function init(){
     $("date").value = today();
-    ["title","customer","site","date","companySelect","expense","discount","taxMode","note"].forEach(id => $(id).addEventListener("input", render));
-    ["companySelect","taxMode","date"].forEach(id => $(id).addEventListener("change", render));
+
+    [
+      "title",
+      "customer",
+      "site",
+      "date",
+      "companySelect",
+      "expense",
+      "discount",
+      "taxMode",
+      "note"
+    ].forEach(id => {
+      $(id).addEventListener("input", render);
+      $(id).addEventListener("change", render);
+    });
+
     $("addItemBtn").addEventListener("click", () => addItem({qty:"1",unit:"式"}));
     $("presetBtn").addEventListener("click", addPreset);
     $("copyBtn").addEventListener("click", copyEstimate);
@@ -364,9 +1077,11 @@
     $("lineBtn").addEventListener("click", shareLine);
     $("mailBtn").addEventListener("click", sendMail);
     $("clearBtn").addEventListener("click", clearForm);
+
     loadDraft();
     render();
   }
+
   document.addEventListener("DOMContentLoaded", init);
 })();
 </script>
