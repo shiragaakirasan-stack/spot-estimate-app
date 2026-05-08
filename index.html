@@ -459,8 +459,11 @@
 
   <div class="actions">
     <button onclick="copyEstimate()">コピー</button>
-    <button class="btn-ok" onclick="window.print()">印刷/PDF</button>
-    <button class="btn-sub" onclick="clearForm()">リセット</button>
+    <button class="btn-ok" onclick="window.print()">PDF</button>
+    <button class="btn-sub" onclick="shareEstimate()">共有</button>
+    <button onclick="shareLine()">LINE</button>
+    <button class="btn-sub" onclick="sendMail()">メール</button>
+    <button class="btn-light" onclick="clearForm()">リセット</button>
   </div>
 
   <div id="toast" class="toast">コピーしました</div>
@@ -709,6 +712,36 @@
         document.body.removeChild(area);
         showToast("コピーしました");
       }
+    }
+
+    async function shareEstimate() {
+      const text = document.getElementById("copyText").textContent;
+      const title = document.getElementById("title").value.trim() || "簡易見積書";
+      if (navigator.share) {
+        try {
+          await navigator.share({ title, text });
+          showToast("共有しました");
+        } catch (e) {
+          showToast("共有をキャンセルしました");
+        }
+      } else {
+        await copyEstimate();
+        showToast("コピーしました。LINEやGmailに貼り付けできます");
+      }
+    }
+
+    function shareLine() {
+      const text = document.getElementById("copyText").textContent;
+      const url = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
+      window.open(url, "_blank");
+    }
+
+    function sendMail() {
+      const text = document.getElementById("copyText").textContent;
+      const title = document.getElementById("title").value.trim() || "簡易見積書";
+      const customer = document.getElementById("customer").value.trim();
+      const subject = customer ? `${title} ${customer}` : title;
+      window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
     }
 
     function clearForm() {
