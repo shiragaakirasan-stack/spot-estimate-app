@@ -32,13 +32,13 @@
     .total-box{background:var(--dark);color:#fff;border-radius:18px;padding:14px;margin-top:12px}
     .total-line{display:flex;justify-content:space-between;gap:12px;font-size:14px}.total-line.big{font-size:22px;font-weight:950;border-top:1px solid rgba(255,255,255,.25);margin-top:8px;padding-top:8px}
     .preview-label{font-weight:950;margin-bottom:8px}
-    .estimate-sheet{background:#fff;color:var(--dark);border:1px solid var(--line);border-radius:16px;overflow:hidden;font-family:"Yu Gothic","Hiragino Kaku Gothic ProN",system-ui,sans-serif}
-    .sheet-top{background:linear-gradient(135deg,#0f172a,#334155);color:#fff;padding:18px 16px}.sheet-title{text-align:center;font-size:24px;font-weight:950;letter-spacing:.18em}.sheet-subtitle{text-align:center;font-size:12px;opacity:.82;margin-top:3px;letter-spacing:.08em}
-    .sheet-body{padding:16px}.customer-name{font-size:20px;font-weight:950;border-bottom:2px solid #111827;padding-bottom:6px;margin-bottom:10px}.box{border:1px solid #e5e7eb;border-radius:10px;padding:8px 10px;font-size:13px;background:#fafafa;margin-bottom:8px}.label-small{display:block;color:#6b7280;font-size:11px;font-weight:900;margin-bottom:2px}
-    .grand-total{border:2px solid #111827;border-radius:14px;padding:12px;margin:16px 0;background:#f8fafc}.grand-total .cap{font-size:12px;font-weight:950;color:#475569;letter-spacing:.1em}.grand-total .amount{text-align:right;font-size:30px;font-weight:950;line-height:1.2}
-    .table-wrap{width:100%;overflow-x:auto;border:1px solid #cbd5e1;border-radius:10px}.estimate-table{width:100%;min-width:650px;border-collapse:collapse;font-size:12px}.estimate-table th{background:#f1f5f9;color:#334155;border:1px solid #cbd5e1;padding:7px 5px;text-align:center;font-size:11px;white-space:nowrap}.estimate-table td{border:1px solid #cbd5e1;padding:8px 5px;vertical-align:top}.no{width:34px;text-align:center}.content{min-width:140px}.detail{min-width:190px;color:#4b5563;white-space:pre-wrap}.qty{width:58px;text-align:right;white-space:nowrap}.unit{width:48px;text-align:center;white-space:nowrap}.price{width:86px;text-align:right;white-space:nowrap;font-weight:800}
-    .summary-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}.summary-table td{padding:6px 8px;border-bottom:1px solid #e5e7eb}.summary-table td:last-child{text-align:right;font-weight:900}
-    .note-box,.company-box{margin-top:14px;border:1px solid #e5e7eb;border-radius:12px;padding:10px;font-size:12px;white-space:pre-wrap;min-height:44px}.company-box{text-align:right;border:0;padding-right:2px;color:#374151;line-height:1.7}
+    .estimate-sheet{background:#fff;color:#334155;border:1px solid #94a3b8;border-radius:0;overflow:hidden;font-family:"Yu Gothic","Hiragino Kaku Gothic ProN",system-ui,sans-serif;padding:18px;box-shadow:none}
+    .sheet-top{background:#fff;color:#334155;padding:0 0 14px;border-bottom:2px solid #94a3b8}.sheet-title{text-align:center;font-size:30px;font-weight:500;letter-spacing:.45em;color:#64748b}.sheet-subtitle{display:none}
+    .sheet-body{padding:16px 0 0}.customer-name{font-size:18px;font-weight:500;border-bottom:1px solid #94a3b8;padding-bottom:8px;margin-bottom:14px;color:#334155}.box{border:1px solid #cbd5e1;border-radius:0;padding:7px 10px;font-size:12px;background:#fff;margin-bottom:8px}.label-small{display:block;color:#6b7280;font-size:11px;font-weight:900;margin-bottom:2px}
+    .grand-total{border-top:2px solid #94a3b8;border-bottom:2px solid #94a3b8;border-left:0;border-right:0;border-radius:0;padding:12px 4px;margin:18px 0;background:#fff}.grand-total .cap{font-size:12px;font-weight:950;color:#475569;letter-spacing:.1em}.grand-total .amount{text-align:left;font-size:34px;font-weight:700;line-height:1.2;color:#334155}
+    .table-wrap{width:100%;overflow-x:auto;border:1px solid #94a3b8;border-radius:0}.estimate-table{width:100%;min-width:650px;border-collapse:collapse;font-size:12px}.estimate-table th{background:#dbe4f0;color:#475569;border:1px solid #94a3b8;padding:7px 5px;text-align:center;font-size:11px;white-space:nowrap;font-weight:700}.estimate-table td{border:1px solid #cbd5e1;padding:8px 5px;vertical-align:top;background:#fff}.no{width:34px;text-align:center}.content{min-width:140px}.detail{min-width:190px;color:#4b5563;white-space:pre-wrap}.qty{width:58px;text-align:right;white-space:nowrap}.unit{width:48px;text-align:center;white-space:nowrap}.price{width:86px;text-align:right;white-space:nowrap;font-weight:800}
+    .summary-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}.summary-table td{padding:7px 8px;border-bottom:1px solid #cbd5e1}.summary-table td:last-child{text-align:right;font-weight:900}
+    .note-box,.company-box{margin-top:14px;border:1px solid #cbd5e1;border-radius:0;padding:10px;font-size:12px;white-space:pre-wrap;min-height:44px;background:#fff}.company-box{text-align:right;border:0;padding-right:2px;color:#475569;line-height:1.9;font-size:11px}
     .toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 14px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:30}.toast.show{opacity:1;bottom:106px}.copy-text{position:absolute;left:-9999px;top:-9999px;white-space:pre-wrap}.hide-print{display:block}
     @media print{ @page{margin:12mm} body{background:#fff} header,.input-area,.actions,.mini-actions,.hide-print,.toast{display:none!important}.app{max-width:none;padding:0}.card{border:0;box-shadow:none;padding:0;margin:0}.estimate-sheet{border-radius:0;border:0}.sheet-top{background:#111827!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}.table-wrap{overflow:visible;border-radius:0}.estimate-table{min-width:0;font-size:11px} }
   </style>
@@ -260,14 +260,19 @@
       </tr>`).join("") : `<tr><td class="no">1</td><td class="content">工事内容未入力</td><td class="detail"></td><td class="qty">1</td><td class="unit">式</td><td class="price">￥0</td><td class="price">￥0</td></tr>`;
 
     $("preview").innerHTML = `
-      <div class="sheet-top">
-        <div class="sheet-title">${esc(title)}</div>
-        <div class="sheet-subtitle">SPOT WORK ESTIMATE</div>
-      </div>
+      <div class="sheet-top"><div class="sheet-title">御 見 積 書</div></div>
       <div class="sheet-body">
-        <div class="customer-name">${esc(customer)}</div>
-        <div class="box"><span class="label-small">現場名</span>${esc(site)}</div>
-        <div class="box"><span class="label-small">発行日</span>${esc(date)}</div>
+        <div style="display:grid;grid-template-columns:1fr 220px;gap:18px;align-items:start;margin-bottom:12px;">
+<div>
+<div class="customer-name">${esc(customer)}</div>
+<div style="font-size:12px;color:#64748b;">下記の通り御見積申し上げます。</div>
+</div>
+<div>
+<div class="box"><span class="label-small">発行日</span>${esc(date)}</div>
+<div class="company-box">${esc(company.name)}<br>${esc(company.address)}<br>${esc(company.tel)}<br>${esc(company.person)}</div>
+</div>
+</div>
+<div class="box"><span class="label-small">現場名</span>${esc(site)}</div>
         <div class="grand-total"><div class="cap">御見積金額</div><div class="amount">${yen(v.total)}</div></div>
         <div class="table-wrap">
           <table class="estimate-table">
@@ -283,7 +288,6 @@
           <tr><td><strong>合計</strong></td><td><strong>${yen(v.total)}</strong></td></tr>
         </table>
         <div class="note-box"><span class="label-small">備考</span>${esc(note)}</div>
-        <div class="company-box">${esc(company.name)}<br>${esc(company.address)}<br>${esc(company.tel)}<br>${esc(company.person)}</div>
       </div>`;
 
     const detailText = v.items.length ? v.items.map((item,i)=>`${i+1}. ${item.name || "工事一式"}\n工事詳細：${item.detail || "-"}\n数量：${item.qtyRaw || "1"}${item.unit || "式"}\n単価：${yen(item.price)}\n金額：${yen(item.amount)}`).join("\n\n") : "1. 工事内容未入力\n数量：1式\n単価：￥0\n金額：￥0";
